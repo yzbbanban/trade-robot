@@ -1,15 +1,10 @@
 package com.yzb.lingo.controller;
 
 import com.yzb.lingo.common.component.ChildFrame;
-import com.yzb.lingo.common.component.MessageBox;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
 
 public class MainController {
 
@@ -24,7 +19,7 @@ public class MainController {
         ChildFrame stage = ChildFrame.newInstance();
         stage.setTitle("获取源数据");
         // 加载窗体
-        Parent root = FXMLLoader.load(getClass().getResource("/BatchSignTrade.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/Analyse.fxml"));
         stage.setScene(new Scene(root, 390, 130));
 
         stage.show();

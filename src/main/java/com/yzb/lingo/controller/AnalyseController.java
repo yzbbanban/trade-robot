@@ -13,7 +13,7 @@ import java.io.File;
 /**
  * 批量签名交易控制器
  */
-public class BatchSignTradeController {
+public class AnalyseController {
 
 
     @FXML
@@ -37,12 +37,13 @@ public class BatchSignTradeController {
     }
 
     /**
-     * 批量签名按钮的单击事件
+     * 運算目的 : 取得最大產能的工序與人力配置
+     * 關鍵取得訊息 : 工站合併方法與合併後的配置人力
      *
      * @throws Exception
      */
     @FXML
-    protected void btnBeginSign_OnClick_Event(ActionEvent event) throws Exception {
+    protected void btnBeginAnalyse_OnClick_Event(ActionEvent event) throws Exception {
         try {
             File file = new File(txtResources.getText());
             if (!file.exists()) {
@@ -51,6 +52,30 @@ public class BatchSignTradeController {
             }
 
             String jsonStr = FileUtils.readFileToString(file, "UTF-8");
+
+            System.out.println(jsonStr);
+
+            /*
+                S : 模型起點
+                T : 模型終點
+                MP : 模型使用人數
+                A1 : 第一站作為開始
+                B1 : 第一站作為結束
+                PA1B1 : Cycle time( 第一站 )
+                PA1B2 : Cycle time( 1~2站合併)
+                CA1B1 : 產能(第一站)
+                FA1B1 :  工站選擇  1 : 選擇成立 ， 0:選擇不成立
+                WA1B1 : 人力配置(第一站)
+
+             */
+
+            //搜索 FA*B*=1的数据
+
+
+
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
