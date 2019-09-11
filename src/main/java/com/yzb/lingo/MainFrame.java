@@ -23,7 +23,7 @@ public class MainFrame extends Application {
         setUserAgentStylesheet(STYLESHEET_CASPIAN);
 
         // 设置窗口标题
-        primaryStage.setTitle("量化交易机器人");
+        primaryStage.setTitle("Lingo");
 
         // 加载窗体布局
         FrameUtil.loadFrame("/MainFrame.fxml", primaryStage);
