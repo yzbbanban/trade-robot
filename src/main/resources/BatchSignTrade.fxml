@@ -15,7 +15,7 @@
       </Label>
       <TextField fx:id="txtResources" layoutX="82.0" layoutY="28.0" prefHeight="23.0" prefWidth="250.0" />
       <Button styleClass="fat-button" layoutX="332.0" layoutY="28.0" mnemonicParsing="false" text="···" onAction="#btnSelectPath_OnClick_Event"/>
-      <Button styleClass="fat-button" layoutX="169.0" layoutY="75.0" mnemonicParsing="false" text="开始签名" onAction="#btnBeginSign_OnClick_Event">
+      <Button styleClass="fat-button" layoutX="169.0" layoutY="75.0" mnemonicParsing="false" text="开始分析" onAction="#btnBeginSign_OnClick_Event">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

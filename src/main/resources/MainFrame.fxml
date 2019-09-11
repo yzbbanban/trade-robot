@@ -3,11 +3,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yzb.lingo.controller.MainController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yzb.lingo.controller.MainController">
     <children>
-        <Button layoutX="14.0" layoutY="355.0" mnemonicParsing="false" onAction="#btnShowMessage_OnClick_Event"
-                text="选择文件"/>
-        <Button layoutX="531.0" layoutY="355.0" mnemonicParsing="false" onAction="#btnUploadMessage_OnClick_Event" text="上传结果"/>
+        <Button layoutX="14.0" layoutY="355.0" mnemonicParsing="false" onAction="#btnShowMessage_OnClick_Event" text="选择文件" />
+        <Button layoutX="522.0" layoutY="355.0" mnemonicParsing="false" onAction="#btnUploadMessage_OnClick_Event" text="上传结果" />
     </children>
 </AnchorPane>
