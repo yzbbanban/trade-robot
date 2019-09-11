@@ -9,6 +9,10 @@ import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 批量签名交易控制器
@@ -51,9 +55,7 @@ public class AnalyseController {
                 return;
             }
 
-            String jsonStr = FileUtils.readFileToString(file, "UTF-8");
-
-            System.out.println(jsonStr);
+            List<String> jsonStr = FileUtils.readLines(file, "UTF-8");
 
             /*
                 S : 模型起點
@@ -69,15 +71,27 @@ public class AnalyseController {
 
              */
 
-            //搜索 FA*B*=1的数据
+            jsonStr.forEach(json -> {
+                //搜索 FA*B*=1的数据
+                if (json.trim().contains("FA")) {
+                    String regEx="(\\d+\\.\\d+)";
 
+                    Pattern p = Pattern.compile(regEx);
+                    Matcher m = p.matcher(json.trim());
+                    System.out.println(json.trim());
+                    System.out.println( m.group());
 
+//                    System.out.println(json.trim().split(" ")[1]);
 
+                }
 
+            });
 
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 }
