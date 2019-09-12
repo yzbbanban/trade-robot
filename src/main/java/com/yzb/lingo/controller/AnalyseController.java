@@ -31,14 +31,6 @@ public class AnalyseController {
      */
     @FXML
     protected void btnSelectPath_OnClick_Event() throws Exception {
-        Stage stage = new Stage();
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("数据源路径");
-        File file = fileChooser.showOpenDialog(stage);
-        if (file != null) {
-            String path = file.getPath();
-            txtResources.setText(path);
-        }
     }
 
     /**

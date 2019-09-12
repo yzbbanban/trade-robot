@@ -4,22 +4,57 @@ import com.google.gson.Gson;
 import com.yzb.lingo.common.component.ChildFrame;
 import com.yzb.lingo.common.component.MessageBox;
 import com.yzb.lingo.domain.ParseLingo;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import javafx.scene.control.TableView;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.*;
 
 public class MainController {
+    @FXML
+    private TextField toProcedure;
+    @FXML
+    private TextField toPeoCount;
+    @FXML
+    private TextField toPoh;
+    @FXML
+    private TextField toActualPoh;
+    @FXML
+    private TextField toLoadRate;
+    @FXML
+    private TextField toGoods;
+
+    @FXML
+    private TableView tView;
+
+    @FXML
+    private TableColumn produce;
+    @FXML
+    private TableColumn peoCount;
+    @FXML
+    private TableColumn cycleTime;
+    @FXML
+    private TableColumn goods;
+    @FXML
+    private TableColumn loadRate;
+    @FXML
+    private TableColumn unit;
+
 
     /**
      * 显示消息按钮的单击事件 不用了
@@ -49,7 +84,6 @@ public class MainController {
     protected void btnUploadMessage_OnClick_Event() throws Exception {
 
 
-
     }
 
     @FXML
@@ -71,7 +105,6 @@ public class MainController {
             txtResources.setText(path);
         }
     }
-
 
 
     /**
@@ -262,10 +295,31 @@ public class MainController {
 
             System.out.println("===>" + gson.toJson(parseLingo));
 
+            //设置界面数据
+            toProcedure.setText("" + parseLingo.getProcedure());
+            toPeoCount.setText("" + parseLingo.getPeoCount());
+            toPoh.setText(parseLingo.getPoh());
+            toActualPoh.setText(parseLingo.getActualPoh());
+            toLoadRate.setText(parseLingo.getToLoadRate());
+            toGoods.setText(parseLingo.getTotalGoods());
+            toPeoCount.setText("" + parseLingo.getPeoCount());
+
+            ObservableList<ParseLingo.AssignBean> list = FXCollections.observableArrayList(parseLingo.getAssign());
+
+            produce.setCellValueFactory(new PropertyValueFactory("produce"));
+            peoCount.setCellValueFactory(new PropertyValueFactory("peoCount"));
+            cycleTime.setCellValueFactory(new PropertyValueFactory("cycleTime"));
+            goods.setCellValueFactory(new PropertyValueFactory("goods"));
+            loadRate.setCellValueFactory(new PropertyValueFactory("loadRate"));
+            unit.setCellValueFactory(new PropertyValueFactory("unit"));
+
+            tView.setItems(list); //tableview添加list
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     /**
