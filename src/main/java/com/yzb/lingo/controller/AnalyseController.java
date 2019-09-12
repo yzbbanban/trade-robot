@@ -9,10 +9,8 @@ import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 批量签名交易控制器
@@ -74,15 +72,12 @@ public class AnalyseController {
             jsonStr.forEach(json -> {
                 //搜索 FA*B*=1的数据
                 if (json.trim().contains("FA")) {
-                    String regEx="(\\d+\\.\\d+)";
-
-                    Pattern p = Pattern.compile(regEx);
-                    Matcher m = p.matcher(json.trim());
-                    System.out.println(json.trim());
-                    System.out.println( m.group());
-
-//                    System.out.println(json.trim().split(" ")[1]);
-
+                    String[] fabParams = parseJson(json);
+                    if (fabParams != null || fabParams.length > 1) {
+                        //不为0 有解
+                        if (new BigDecimal(fabParams[1]).compareTo(BigDecimal.ZERO) != 0) {
+                        }
+                    }
                 }
 
             });
@@ -91,6 +86,12 @@ public class AnalyseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String[] parseJson(String json) {
+        json = json.replaceAll(" +", " ");
+        String[] params = json.trim().split(" ");
+        return params;
     }
 
 
