@@ -2,7 +2,9 @@ package com.yzb.lingo;
 
 import com.yzb.lingo.common.util.FrameUtil;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * 主窗口（程序入口）
@@ -27,5 +29,6 @@ public class MainFrame extends Application {
 
         // 加载窗体布局
         FrameUtil.loadFrame("/MainFrame.fxml", primaryStage);
+
     }
 }

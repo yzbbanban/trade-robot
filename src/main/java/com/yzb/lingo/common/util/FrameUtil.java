@@ -1,9 +1,11 @@
 package com.yzb.lingo.common.util;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * 窗口工具类
@@ -11,7 +13,8 @@ import javafx.stage.Stage;
 public class FrameUtil {
     /**
      * 加载窗口布局
-     * @param uri 窗口资源文件路径
+     *
+     * @param uri   窗口资源文件路径
      * @param stage 窗口实例
      */
     public static void loadFrame(String uri, Stage stage) throws Exception {
@@ -26,12 +29,22 @@ public class FrameUtil {
         // 将布局场景设置到窗口
         stage.setScene(scene);
 
+        // 设置窗口关闭事件(主窗体退出，则整个应用退出)
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                System.gc();
+                System.exit(0);
+            }
+        });
+
         // 显示窗口
         stage.show();
     }
 
     /**
      * 加载窗口布局
+     *
      * @param uri 窗口资源文件路径
      * @return 返回窗口实例
      */

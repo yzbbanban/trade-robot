@@ -14,8 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 批量签名交易控制器
@@ -76,7 +74,7 @@ public class AnalyseController {
 
             /*
                 计算：
-                3600/PA1B1 负载率  3600/PA*B*
+                3600/PA1B1 负载率  3600/PA*B*   3600/Cycle time
              */
 
             ParseLingo parseLingo = new ParseLingo();
@@ -164,11 +162,72 @@ public class AnalyseController {
 
             //组装数据
             Gson gson = new Gson();
-            System.out.println("peo==>" + gson.toJson(peo));
-            System.out.println("ct==>" + gson.toJson(ct));
-            System.out.println("ca==>" + gson.toJson(ca));
-            System.out.println("===>"+parseLingo);
+            System.out.println("peo=人力配置=>" + gson.toJson(peo));
+            System.out.println("ct=Cycle time=>" + gson.toJson(ct));
+            System.out.println("ca=产能=>" + gson.toJson(ca));
+            List<ParseLingo.AssignBean> assignBeans = new ArrayList<>();
+            Iterator<String> it = patterns.iterator();
+            int procedure = 0;
+            BigDecimal totalGoods = BigDecimal.ZERO;
+            //基本负载率
+            BigDecimal baseUnit = BigDecimal.ZERO;
+            //单位时间总和
+            BigDecimal totalTime = BigDecimal.ZERO;
+            BigDecimal minUnit = new BigDecimal("10000000000");
+            while (it.hasNext()) {
+                String str = it.next();
+                String num = str.split(",")[1];
+                int n = Integer.parseInt(num);
+                if (n > procedure) {
+                    procedure = n;
+                }
+                ParseLingo.AssignBean assignBean = new ParseLingo.AssignBean();
+                assignBean.setProduce(str);
+                assignBean.setPeoCount(new BigDecimal(peo.get(str)).intValue());
+                String cycleT = ct.get(str);
+                assignBean.setCycleTime(cycleT);
+                String good = ca.get(str);
+                totalGoods = totalGoods.add(new BigDecimal(good));
+                assignBean.setGoods(good);
+                totalTime = totalGoods.add(new BigDecimal(cycleT));
+                //第一工序为100%
+                if (str.contains("1")) {
+                    assignBean.setLoadRate("1");
+                    baseUnit = new BigDecimal("3600")
+                            .divide(new BigDecimal(cycleT), BigDecimal.ROUND_HALF_UP);
+                }
+                BigDecimal u = new BigDecimal("3600")
+                        .divide(new BigDecimal(cycleT), 4, BigDecimal.ROUND_HALF_UP);
+                //用于计算
+                assignBean.setUnit(u.stripTrailingZeros().toPlainString());
+                if (u.compareTo(minUnit) < 0) {
+                    minUnit = u;
+                }
+                assignBeans.add(assignBean);
+            }
+            parseLingo.setAssign(assignBeans);
+            parseLingo.setProcedure(procedure);
+            parseLingo.setTotalGoods(totalGoods.stripTrailingZeros().toPlainString());
+            parseLingo.setPoh(new BigDecimal("3600")
+                    .divide(totalTime, 4, BigDecimal.ROUND_HALF_UP)
+                    .stripTrailingZeros().toPlainString());
+            parseLingo.setActualPoh(minUnit
+                    .divide(new BigDecimal(parseLingo.getPeoCount()), 4, BigDecimal.ROUND_HALF_UP)
+                    .stripTrailingZeros().toPlainString());
+            parseLingo.setToLoadRate(new BigDecimal(parseLingo.getActualPoh())
+                    .divide(new BigDecimal(parseLingo.getPoh()), 4, BigDecimal.ROUND_HALF_UP)
+                    .stripTrailingZeros().toPlainString());
 
+
+            //计算负载率
+            for (ParseLingo.AssignBean assignBean : parseLingo.getAssign()) {
+                // 基本/每个合并工序
+                String rate = baseUnit.divide(new BigDecimal(assignBean.getUnit()), 4, BigDecimal.ROUND_HALF_UP)
+                        .stripTrailingZeros().toPlainString();
+                assignBean.setLoadRate(rate);
+            }
+
+            System.out.println("===>" + gson.toJson(parseLingo));
 
 
         } catch (Exception e) {
@@ -201,17 +260,5 @@ public class AnalyseController {
         String[] params = json.trim().split(" ");
         return params;
     }
-
-
-    public static void main(String[] args) {
-
-
-        String pattern = "[A-Z]{2}1[A-Z]3";
-
-        boolean isMatch = Pattern.matches(pattern, "CA1B3");
-        System.out.println(isMatch);
-
-    }
-
 
 }
