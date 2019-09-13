@@ -19,13 +19,32 @@ public class ParseLingo {
      * assign : [{"produce":"1,2","peoCount":2,"cycleTime":"1","goods":"13","loadRate":"0.12"},{"produce":"3,4,5,6,7","peoCount":1,"cycleTime":"1","goods":"13","loadRate":0.12},{"produce":"8,9,10,11,12,13,14,15,16","peoCount":4,"cycleTime":"1","goods":"13","loadRate":"0.12"}]
      */
 
+    private String tableName;
+    private String calcType;
     private int procedure;
     private int peoCount;
     private String poh;
     private String actualPoh;
     private String toLoadRate;
     private String totalGoods;
+    private String toActualGoods;
     private List<AssignBean> assign;
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    public String getCalcType() {
+        return calcType;
+    }
+
+    public void setCalcType(String calcType) {
+        this.calcType = calcType;
+    }
 
     public int getProcedure() {
         return procedure;
@@ -75,6 +94,14 @@ public class ParseLingo {
         this.totalGoods = totalGoods;
     }
 
+    public String getToActualGoods() {
+        return toActualGoods;
+    }
+
+    public void setToActualGoods(String toActualGoods) {
+        this.toActualGoods = toActualGoods;
+    }
+
     public List<AssignBean> getAssign() {
         return assign;
     }
@@ -84,14 +111,18 @@ public class ParseLingo {
     }
 
     @Override
-    public String toString() {
+    public String
+    toString() {
         return "ParseLingo{" +
-                "procedure=" + procedure +
+                "tableName='" + tableName + '\'' +
+                ", calcType='" + calcType + '\'' +
+                ", procedure=" + procedure +
                 ", peoCount=" + peoCount +
                 ", poh='" + poh + '\'' +
                 ", actualPoh='" + actualPoh + '\'' +
                 ", toLoadRate='" + toLoadRate + '\'' +
                 ", totalGoods='" + totalGoods + '\'' +
+                ", toActualGoods='" + toActualGoods + '\'' +
                 ", assign=" + assign +
                 '}';
     }

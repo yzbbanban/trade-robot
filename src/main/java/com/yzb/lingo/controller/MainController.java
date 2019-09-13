@@ -27,6 +27,10 @@ import java.util.*;
 
 public class MainController {
     @FXML
+    private TextField toTableName;
+    @FXML
+    private TextField calcType;
+    @FXML
     private TextField toProcedure;
     @FXML
     private TextField toPeoCount;
@@ -38,6 +42,9 @@ public class MainController {
     private TextField toLoadRate;
     @FXML
     private TextField toGoods;
+    @FXML
+    private TextField toActualGoods;
+
 
     @FXML
     private TableView tView;
@@ -152,6 +159,11 @@ public class MainController {
 
             //循环第一次
             jsonStr.forEach(json -> {
+                if (json.contains("Title")) {
+                    String[] res = json.split("_");
+                    parseLingo.setTableName(res[1]);
+                    parseLingo.setCalcType(res[2]);
+                }
                 //找到总人数
                 if (json.contains("MP")) {
                     String[] mpParams = parseJson(json);
@@ -182,7 +194,7 @@ public class MainController {
                 }
 
             });
-
+            int pC = parseLingo.getPeoCount();
             //循环第二次
             if (patterns.size() > 0) {
                 boolean isNotSp = true;
@@ -235,12 +247,14 @@ public class MainController {
             List<ParseLingo.AssignBean> assignBeans = new ArrayList<>();
             Iterator<String> it = patterns.iterator();
             int procedure = 0;
-            BigDecimal totalGoods = BigDecimal.ZERO;
+            //瓶颈产能
+            BigDecimal totalGoods = new BigDecimal("10000000000");
             //基本负载率
-            BigDecimal baseUnit = BigDecimal.ZERO;
+            BigDecimal baseUnit = new BigDecimal("10000000000");
             //单位时间总和
             BigDecimal totalTime = BigDecimal.ZERO;
             BigDecimal minUnit = new BigDecimal("10000000000");
+            BigDecimal baseLoad = BigDecimal.ZERO;
             while (it.hasNext()) {
                 String str = it.next();
                 String num = str.split(",")[1];
@@ -250,21 +264,27 @@ public class MainController {
                 }
                 ParseLingo.AssignBean assignBean = new ParseLingo.AssignBean();
                 assignBean.setProduce(str);
-                assignBean.setPeoCount(new BigDecimal(peo.get(str)).intValue());
+                BigDecimal peoc = new BigDecimal(peo.get(str));
+                assignBean.setPeoCount(peoc.intValue());
                 String cycleT = ct.get(str);
                 assignBean.setCycleTime(cycleT);
                 String good = ca.get(str);
-                totalGoods = totalGoods.add(new BigDecimal(good));
-                assignBean.setGoods(good);
-                totalTime = totalGoods.add(new BigDecimal(cycleT));
-                //第一工序为100%
-                if (str.contains("1")) {
-                    assignBean.setLoadRate("1");
-                    baseUnit = new BigDecimal("3600")
-                            .divide(new BigDecimal(cycleT), BigDecimal.ROUND_HALF_UP);
+                System.out.println("good===>" + good);
+                if (totalGoods.compareTo(new BigDecimal(good)) > 0) {
+                    totalGoods = new BigDecimal(good);
                 }
-                BigDecimal u = new BigDecimal("3600")
-                        .divide(new BigDecimal(cycleT), 4, BigDecimal.ROUND_HALF_UP);
+                assignBean.setGoods(new BigDecimal(good)
+                        .divide(peoc, 4, BigDecimal.ROUND_HALF_UP)
+                        .stripTrailingZeros().toPlainString());
+                totalTime = totalTime.add(new BigDecimal(cycleT));
+                BigDecimal u = peoc.multiply(new BigDecimal("3600")
+                        .divide(new BigDecimal(cycleT), 4, BigDecimal.ROUND_HALF_UP));
+                //选取最小产能
+                if (baseUnit.compareTo(u) > 0) {
+                    baseUnit = u;
+                }
+
+                System.out.println("peoc===>" + peoc + " : " + u);
                 //用于计算
                 assignBean.setUnit(u.stripTrailingZeros().toPlainString());
                 if (u.compareTo(minUnit) < 0) {
@@ -275,15 +295,23 @@ public class MainController {
             parseLingo.setAssign(assignBeans);
             parseLingo.setProcedure(procedure);
             parseLingo.setTotalGoods(totalGoods.stripTrailingZeros().toPlainString());
-            parseLingo.setPoh(new BigDecimal("3600")
-                    .divide(totalTime, 4, BigDecimal.ROUND_HALF_UP)
-                    .stripTrailingZeros().toPlainString());
-            parseLingo.setActualPoh(minUnit
+
+            baseLoad = new BigDecimal("3600")
+                    .divide(totalTime, 4, BigDecimal.ROUND_HALF_UP);
+
+            parseLingo.setPoh(minUnit
                     .divide(new BigDecimal(parseLingo.getPeoCount()), 4, BigDecimal.ROUND_HALF_UP)
                     .stripTrailingZeros().toPlainString());
-            parseLingo.setToLoadRate(new BigDecimal(parseLingo.getActualPoh())
-                    .divide(new BigDecimal(parseLingo.getPoh()), 4, BigDecimal.ROUND_HALF_UP)
+            BigDecimal actG = totalGoods.divide(new BigDecimal("1.1"), 4, BigDecimal.ROUND_HALF_UP);
+            parseLingo.setToActualGoods(actG.stripTrailingZeros().toPlainString());
+            parseLingo.setActualPoh(actG
+                    .divide(new BigDecimal(parseLingo.getPeoCount()), 4, BigDecimal.ROUND_HALF_UP)
                     .stripTrailingZeros().toPlainString());
+
+            parseLingo.setToLoadRate(
+                    baseUnit.divide(new BigDecimal(parseLingo.getPeoCount()), 4, BigDecimal.ROUND_HALF_UP)
+                            .divide(baseLoad, 4, BigDecimal.ROUND_HALF_UP)
+                            .stripTrailingZeros().toPlainString());
 
 
             //计算负载率
@@ -291,6 +319,7 @@ public class MainController {
                 // 基本/每个合并工序
                 String rate = baseUnit.divide(new BigDecimal(assignBean.getUnit()), 4, BigDecimal.ROUND_HALF_UP)
                         .stripTrailingZeros().toPlainString();
+                System.out.println(baseUnit + "---" + rate);
                 assignBean.setLoadRate(rate);
             }
 
@@ -303,7 +332,22 @@ public class MainController {
             toActualPoh.setText(parseLingo.getActualPoh());
             toLoadRate.setText(parseLingo.getToLoadRate());
             toGoods.setText(parseLingo.getTotalGoods());
+            toActualGoods.setText("" + parseLingo.getToActualGoods());
             toPeoCount.setText("" + parseLingo.getPeoCount());
+            toTableName.setText("" + parseLingo.getTableName());
+            String calcT = "";
+            switch (parseLingo.getCalcType()) {
+                case "1":
+                    calcT = "成品";
+                    break;
+                case "2":
+                    calcT = "车缝成品";
+                    break;
+                case "3":
+                    calcT = "自订";
+                    break;
+            }
+            calcType.setText(calcT + "(成品/车缝成品/自订)");
 
             ObservableList<ParseLingo.AssignBean> list = FXCollections.observableArrayList(parseLingo.getAssign());
 
