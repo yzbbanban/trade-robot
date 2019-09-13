@@ -55,6 +55,8 @@ public class MainController {
     @FXML
     private TableColumn unit;
 
+    private ParseLingo parseLingo = new ParseLingo();
+
 
     /**
      * 显示消息按钮的单击事件 不用了
@@ -143,7 +145,6 @@ public class MainController {
                 3600/PA1B1 负载率  3600/PA*B*   3600/Cycle time
              */
 
-            ParseLingo parseLingo = new ParseLingo();
             Set<String> patterns = new HashSet<>();
             Map<String, String> peo = new HashMap<>();
             Map<String, String> ct = new HashMap<>();
