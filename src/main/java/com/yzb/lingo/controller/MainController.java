@@ -186,7 +186,7 @@ public class MainController {
                             //得出正则表达
                             fab = fab.replaceAll("FA", "");
                             String[] countParam = fab.split("B");
-                            String pattern = countParam[0] + "," + countParam[1];
+                            String pattern = countParam[0] + "-" + countParam[1];
                             patterns.add(pattern);
 
                         }
@@ -257,7 +257,7 @@ public class MainController {
             BigDecimal baseLoad = BigDecimal.ZERO;
             while (it.hasNext()) {
                 String str = it.next();
-                String num = str.split(",")[1];
+                String num = str.split("-")[1];
                 int n = Integer.parseInt(num);
                 if (n > procedure) {
                     procedure = n;
@@ -379,7 +379,7 @@ public class MainController {
     private void setWPCValue(Set<String> patterns, Map<String, String> peo, String variable, String value, String wa) {
         variable = variable.replaceAll(wa, "");
         String[] countParam = variable.split("B");
-        String p = countParam[0] + "," + countParam[1];
+        String p = countParam[0] + "-" + countParam[1];
         if (patterns.contains(p)) {
             //匹配成功
             //获取人力配置
