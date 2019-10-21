@@ -1,76 +1,152 @@
 package com.yzb.lingo.common.util;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.yzb.lingo.domain.LineBalance;
+import com.yzb.lingo.domain.MainProduct;
+import com.yzb.lingo.domain.Production;
+import com.yzb.lingo.domain.ResultJson;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by brander on 2019/9/13
  */
 public class BalanceCreateUtil {
 
-    public static void createBalance() {
+    public static void main(String[] args) {
+
+        String result = OkHttpUtils.getRequest("http://118.31.54.117:7777/api/index/mproduct");
+
+        Gson gson = new Gson();
+
+        ResultJson<MainProduct> mpList = gson.fromJson(result, new TypeToken<ResultJson<MainProduct>>() {
+        }.getType());
+
+        System.out.println("===>" + mpList);
+
+        String mpUrl = "http://118.31.54.117:7777/api/index/product?mname=5&&ltype=1";
+
+        result = OkHttpUtils.getRequest(mpUrl);
+
+
+        ResultJson<Production> list = gson.fromJson(result, new TypeToken<ResultJson<Production>>() {
+        }.getType());
+
+
+        List<Production> productionList = list.getData();
+
+        System.out.println("===> " + productionList);
+
+        //组装数据
+        //工序数量
+        int dataDty = list.getData().size();
+
+        LineBalance line = new LineBalance();
+        line.setDataQty(dataDty);
+        line.setPeoTotalCount(20);
+        line.setProductionList(productionList);
+        createBalance(line);
+
+    }
+
+
+    public static void createBalance(LineBalance lineBalance) {
+        //工序列表
+        List<Production> productionList = lineBalance.getProductionList();
+
+        int paramaterRow = 0;
+        //计算需要工序
         double stTime = System.currentTimeMillis();
         //工序数量
-        int dataDty = 16;
-        //复制 10*16
+        int dataDty = lineBalance.getDataQty();
+        //工序群组判断：获取是不是手工，手工可以和任何工序联系
+        //获取群组
         for (int i = 0; i < dataDty; i++) {
-            for (int j = 0; j < 10; j++) {
-                //
+            Production production = productionList.get(i);
+
+            if (i == 1) {
+                production.setAi("s");
+                String bj = "a" + (i + 1);
+                production.setBj(bj);
+                production.setFlow("f" + "s" + bj);
+            } else {
+                production.setAi("b" + i);
+                String bj = "a" + (i + 1);
+                production.setBj(bj);
+                production.setFlow("f" + "b" + i + bj);
             }
+            paramaterRow = paramaterRow + 1;
+
         }
 
-        //工序群组判断：获取是不是手工，手工可以和任何工序联系
-
-        //工序名称变数
-        String processType;
-
-        //群组代号变数
-        String processGroup = "";
-
-        //定义工序群组数量
-        int groupQt = 1;
+        //建立 A2
+        int exitIfFlag;
+        String startProcessType;
+        double pij = 0;
 
         for (int i = 0; i < dataDty; i++) {
-            //TODO
-            processType = "7" + i;
+            Production production = productionList.get(i);
+            exitIfFlag = 0;
+            // 读取起点工序种类
+            startProcessType = production.getLname();
 
-            for (int j = 1; j < 15; j++) {
-                //TODO
-                if (processType.equals("7")) {
-                    processGroup = "j" + 6;
+            for (int j = i; j < dataDty; j++) {
+                Production productionJ = productionList.get(j);
+                //避免除了手工站以外发生不同工种合并
+                //类型为手工则可以正常合并
+                if ("手工".equals(startProcessType)) {
+                    startProcessType = productionJ.getLname();
+                }
+
+                //j类型不是手工，还有 spt 不是手工，则不可以可以合并
+                if (!productionJ.getLname().equals("手工")
+                        && !productionJ.getLname().equals(startProcessType)) {
+                    exitIfFlag = 1;
+                }
+
+                //如果能合并
+                if (exitIfFlag == 0) {
+                    //添加能计算的数据
+                    Production pd = new Production();
+                    pd.setType("To bi");
+                    pd.setAi("a" + (i + 1));
+                    pd.setBj("b" + (j + 1));
+                    pd.setFlow("f" + pd.getAi() + pd.getBj());
+                    pd.setPeoParam("w" + pd.getAi() + pd.getBj());
+                    pij = pij + Double.parseDouble(productionJ.getPurect());
+                    pd.setPij("" + pij);
+                    pd.setUph("" + 3600 / pij);
+                    pd.setMulUph("" + 10000);
+                    pd.setShoulian("" + 0);
+                    productionList.add(pd);
+                    paramaterRow = paramaterRow + 1;
+                }
+
+                if (exitIfFlag == 1) {
+                    //j = dataDty + 1;
+                    break;
                 }
 
             }
-            //找不到時，建立新的Group
-            if (StringUtils.isEmpty(processGroup)) {
-                //设置值=processType
-                //TODO
-                processGroup = 2 + groupQt + "6";
-                groupQt = groupQt + 1;
-
-            }
-
-            //设置值 20+i，11 = processGroup
-
 
         }
 
-        //建立变数模组 建立入A1&A3
-        int paramaterRow;
-        paramaterRow = 21;
+        productionList.get(paramaterRow).setType("To t");
+        String b24 = "b" + dataDty;
+        productionList.get(paramaterRow).setAi(b24);
+        productionList.get(paramaterRow).setBj("t");
+        productionList.get(paramaterRow).setFlow("f" + b24 + "t");
+        productionList.get(paramaterRow).setChangeParam("" + 1);
+        paramaterRow = paramaterRow + 1;
+
+
 
         for (int i = 0; i < dataDty; i++) {
-            // 20+i,12 i
-            // 20+3 "To ai"
-            // A1
-            if (i == 1) {
-
-
-
-
-            }
 
         }
-
 
     }
 
