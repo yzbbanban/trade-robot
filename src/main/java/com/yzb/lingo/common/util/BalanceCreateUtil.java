@@ -144,10 +144,6 @@ public class BalanceCreateUtil {
             Production pi = productionList.get(i);
             ai = "a" + (i + 1);
             bi = "b" + (i + 1);
-            fAiIn = "=";
-            fAiOut = "=";
-            fBiIn = "=";
-            fBiOut = "=";
 
             for (int j = 0; j < paramaterRow; j++) {
                 Production pj = productionList.get(j);
