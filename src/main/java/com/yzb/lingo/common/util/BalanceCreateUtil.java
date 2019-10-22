@@ -6,9 +6,7 @@ import com.yzb.lingo.domain.LineBalance;
 import com.yzb.lingo.domain.MainProduct;
 import com.yzb.lingo.domain.Production;
 import com.yzb.lingo.domain.ResultJson;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +23,6 @@ public class BalanceCreateUtil {
         ResultJson<MainProduct> mpList = gson.fromJson(result, new TypeToken<ResultJson<MainProduct>>() {
         }.getType());
 
-        System.out.println("===>" + mpList);
-
         String mpUrl = "http://118.31.54.117:7777/api/index/product?mname=5&&ltype=1";
 
         result = OkHttpUtils.getRequest(mpUrl);
@@ -38,7 +34,6 @@ public class BalanceCreateUtil {
 
         List<Production> productionList = list.getData();
 
-        System.out.println("===> " + productionList);
 
         //组装数据
         //工序数量
@@ -48,12 +43,12 @@ public class BalanceCreateUtil {
         line.setDataQty(dataDty);
         line.setPeoTotalCount(20);
         line.setProductionList(productionList);
-        createBalance(line);
-
+        List<Production> l = createBalance(line);
+        System.out.println("xxxxx>" + gson.toJson(l));
     }
 
 
-    public static void createBalance(LineBalance lineBalance) {
+    public static List<Production> createBalance(LineBalance lineBalance) {
         //工序列表
         List<Production> productionList = lineBalance.getProductionList();
 
@@ -134,6 +129,7 @@ public class BalanceCreateUtil {
 
         }
 
+        productionList.add(new Production());
         productionList.get(paramaterRow).setType("To t");
         String b24 = "b" + dataDty;
         productionList.get(paramaterRow).setAi(b24);
@@ -143,10 +139,50 @@ public class BalanceCreateUtil {
         paramaterRow = paramaterRow + 1;
 
 
-
+        String ai, bi, fAiIn, fAiOut, fBiIn, fBiOut;
         for (int i = 0; i < dataDty; i++) {
+            Production pi = productionList.get(i);
+            ai = "a" + (i + 1);
+            bi = "b" + (i + 1);
+            fAiIn = "=";
+            fAiOut = "=";
+            fBiIn = "=";
+            fBiOut = "=";
+
+            for (int j = 0; j < paramaterRow; j++) {
+                Production pj = productionList.get(j);
+                productionList.add(new Production());
+                if (ai.equals(pj.getBj())) {
+                    if (i == 0) {
+                        fAiIn = "" + 1;
+                    } else {
+                        fAiIn = "" + 0;
+                    }
+                    pi.setAiIn(fAiIn);
+
+                }
+                if (ai.equals(pj.getAi())) {
+                    fAiOut = "" + 0;
+                    pi.setBiIn(fAiOut);
+                }
+                if (bi.equals(pj.getBj())) {
+                    fBiIn = "" + 0;
+                    pi.setBiOut(fBiIn);
+                }
+
+                if (bi.equals(pj.getAi())) {
+                    if (i == dataDty - 1) {
+                        fBiOut = "" + 1;
+                    } else {
+                        fBiOut = "" + 0;
+                    }
+                    pi.setBiOut(fBiOut);
+                }
+
+            }
 
         }
+        return productionList;
 
     }
 
