@@ -53,7 +53,8 @@ public class LingoGreateUtil {
         for (int i = 0; i < typeB; i++) {
             // 流程数据：流程工序
             int index = typeA + i;
-            aibj = productionList.get(index).getAi() + productionList.get(index).getBj();
+            Production pro = productionList.get(index);
+            aibj = pro.getAi() + pro.getBj();
             stringX.append(stringX + "c" + aibj);
             if (i != typeB - 1) {
                 stringX.append(stringX + ",");
@@ -65,7 +66,8 @@ public class LingoGreateUtil {
         for (int i = 0; i < typeB; i++) {
             // 流程数据：流程工序
             int index = typeA + i;
-            aibj = productionList.get(index).getAi() + productionList.get(index).getBj();
+            Production pro = productionList.get(index);
+            aibj = pro.getAi() + pro.getBj();
             stringX.append(stringX + "m" + aibj);
             if (i != typeB - 1) {
                 stringX.append(stringX + "+");
@@ -91,8 +93,9 @@ public class LingoGreateUtil {
         //建立paibj
         for (int i = 0; i < typeB; i++) {
             int index = typeA + i;
-            aibj = productionList.get(index).getAi() + productionList.get(index).getBj();
-            stringX.append("p" + aibj + productionList.get(index).getPij());
+            Production pro = productionList.get(index);
+            aibj = pro.getAi() + pro.getBj();
+            stringX.append("p" + aibj + pro.getPij());
             lingoRow = lingoRow + 1;
         }
 
@@ -103,7 +106,8 @@ public class LingoGreateUtil {
 
         for (int i = 0; i < typeB; i++) {
             int index = typeA + i;
-            aibj = productionList.get(index).getAi() + productionList.get(index).getBj();
+            Production pro = productionList.get(index);
+            aibj = pro.getAi() + pro.getBj();
             stringX.append("c" + aibj + " = @if((w" + aibj + "*f" + aibj + "#eq#0),messs,(w" + aibj + "*f" + aibj + "*3600/p" + aibj + "));");
             lingoRow = lingoRow + 1;
         }
@@ -114,7 +118,8 @@ public class LingoGreateUtil {
 
         for (int i = 0; i < typeB; i++) {
             int index = typeA + i;
-            aibj = productionList.get(index).getAi() + productionList.get(index).getBj();
+            Production pro = productionList.get(index);
+            aibj = pro.getAi() + pro.getBj();
             stringX.append("m" + aibj + " = @if(f" + aibj + "#eq#1,@if(w" + aibj + "#eq#0,1,0),0);");
             lingoRow = lingoRow + 1;
         }
@@ -134,9 +139,10 @@ public class LingoGreateUtil {
             stringX = new StringBuilder();
 
             for (int j = 0; j < typeA + typeB; j++) {
-                int index = j;
-                if (productionList.get(index).getBj().equals(ai)) {
-                    aibj = productionList.get(index).getAi() + productionList.get(index).getBj();
+                Production pro = productionList.get(j);
+                if (pro.getBj().equals(ai)) {
+
+                    aibj = pro.getAi() + pro.getBj();
                     stringX.append("+f" + aibj);
 
                 }
@@ -144,9 +150,9 @@ public class LingoGreateUtil {
             stringX.append("=");
 
             for (int j = 0; j < typeA + typeB; j++) {
-                int index = j;
-                if (productionList.get(index).getAi().equals(ai)) {
-                    aibj = productionList.get(index).getAi() + productionList.get(index).getBj();
+                Production pro = productionList.get(j);
+                if (pro.getAi().equals(ai)) {
+                    aibj = pro.getAi() + pro.getBj();
                     stringX.append("+f" + aibj);
                 }
             }
@@ -167,9 +173,9 @@ public class LingoGreateUtil {
             stringX = new StringBuilder();
 
             for (int j = 0; j < typeA + typeB; j++) {
-                int index = j;
-                if (productionList.get(index).getBj().equals(bi)) {
-                    aibj = productionList.get(index).getAi() + productionList.get(index).getBj();
+                Production pro = productionList.get(j);
+                if (pro.getBj().equals(bi)) {
+                    aibj = pro.getAi() + pro.getBj();
                     stringX.append("+f" + aibj);
 
                 }
@@ -179,9 +185,9 @@ public class LingoGreateUtil {
             stringX.append("=");
 
             for (int j = 0; j < typeA + typeB; j++) {
-                int index = j;
-                if (productionList.get(index).getAi().equals(bi)) {
-                    aibj = productionList.get(index).getAi() + productionList.get(index).getBj();
+                Production pro = productionList.get(j);
+                if (pro.getAi().equals(bi)) {
+                    aibj = pro.getAi() + pro.getBj();
                     stringX.append("+f" + aibj);
 
                 }
@@ -199,7 +205,8 @@ public class LingoGreateUtil {
 
         for (int i = 0; i < typeB; i++) {
             int index = typeA + i;
-            aibj = productionList.get(index).getAi() + productionList.get(index).getBj();
+            Production pro = productionList.get(index);
+            aibj = pro.getAi() + pro.getBj();
             stringX.append("+f" + aibj + "*w" + aibj);
         }
 
@@ -217,8 +224,8 @@ public class LingoGreateUtil {
 
         for (int i = 1; i < typeA + typeB; i++) {
             stringX = new StringBuilder();
-
-            aibj = productionList.get(i).getAi() + productionList.get(i).getBj();
+            Production pro = productionList.get(i);
+            aibj = pro.getAi() + pro.getBj();
 
             stringX.append("@bin(f" + aibj + ");");
 
