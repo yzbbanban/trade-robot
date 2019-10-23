@@ -6,12 +6,21 @@ import java.util.List;
  */
 public class LineBalance {
 
+    private String lineName;
+
     private int peoTotalCount;
 
     private int dataQty;
 
     private List<Production> productionList;
 
+    public String getLineName() {
+        return lineName;
+    }
+
+    public void setLineName(String lineName) {
+        this.lineName = lineName;
+    }
 
     public int getPeoTotalCount() {
         return peoTotalCount;
@@ -40,7 +49,8 @@ public class LineBalance {
     @Override
     public String toString() {
         return "LineBalance{" +
-                "peoTotalCount=" + peoTotalCount +
+                "lineName='" + lineName + '\'' +
+                ", peoTotalCount=" + peoTotalCount +
                 ", dataQty=" + dataQty +
                 ", productionList=" + productionList +
                 '}';

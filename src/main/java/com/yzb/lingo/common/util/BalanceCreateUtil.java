@@ -44,11 +44,16 @@ public class BalanceCreateUtil {
         line.setPeoTotalCount(20);
         line.setProductionList(productionList);
         List<Production> l = createBalance(line);
+        line.setLineName("123");
         System.out.println("xxxxx>" + gson.toJson(l));
+
+        String re = LingoGreateUtil.createLingo(line);
+
+        System.out.println("===>" + re);
     }
 
 
-    public static List<Production> createBalance(LineBalance lineBalance) {
+    private static List<Production> createBalance(LineBalance lineBalance) {
         //工序列表
         List<Production> productionList = lineBalance.getProductionList();
 
