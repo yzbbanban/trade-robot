@@ -1,6 +1,7 @@
 package com.yzb.lingo.domain;
 
-import java.math.BigDecimal;
+import com.google.gson.annotations.Expose;
+import com.yzb.lingo.common.ui.MyCheckbox;
 
 /**
  * Created by brander on 2019/10/20
@@ -18,7 +19,6 @@ public class Production {
      * ct
      */
     private String purect;
-
 
     private String needName;
 
@@ -100,8 +100,18 @@ public class Production {
      */
     private String biOut;
 
+    @Expose(serialize = false, deserialize = false)
+    public transient MyCheckbox myCheckbox = new MyCheckbox();
 
     private String startProcessType;
+
+    public MyCheckbox getMyCheckbox() {
+        return myCheckbox;
+    }
+
+    public void setMyCheckbox(MyCheckbox myCheckbox) {
+        this.myCheckbox = myCheckbox;
+    }
 
     public Integer getId() {
         return id;

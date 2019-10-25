@@ -1,9 +1,16 @@
 package com.yzb.lingo.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.yzb.lingo.common.component.ChildFrame;
 import com.yzb.lingo.common.component.MessageBox;
-import com.yzb.lingo.domain.ParseLingo;
+import com.yzb.lingo.common.util.LingoGreateUtil;
+import com.yzb.lingo.common.util.OkHttpUtils;
+import com.yzb.lingo.domain.*;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,15 +18,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import javafx.scene.control.TableView;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -44,6 +49,10 @@ public class MainController {
     private TextField toGoods;
     @FXML
     private TextField toActualGoods;
+    @FXML
+    private TextField peoTotalCount;
+    @FXML
+    private TextField filePath;
 
 
     @FXML
@@ -62,8 +71,27 @@ public class MainController {
     @FXML
     private TableColumn unit;
 
+    @FXML
+    private ChoiceBox<String> cbLineNameList;
+
+    @FXML
+    private TableView tVData;
+    @FXML
+    private TableColumn<Production, String> index;
+    @FXML
+    private TableColumn<Production, String> flowName;
+    @FXML
+    private TableColumn<Production, String> cTime;
+    @FXML
+    private TableColumn<Production, String> techNeed;
+    @FXML
+    private TableColumn<Production, CheckBox> check;
+
+
     private ParseLingo parseLingo = new ParseLingo();
 
+    private LineBalance line = new LineBalance();
+    private List<Production> productionList;
 
     /**
      * 显示消息按钮的单击事件 不用了
@@ -240,7 +268,9 @@ public class MainController {
             }
 
             //组装数据
-            Gson gson = new Gson();
+            GsonBuilder builder = new GsonBuilder();
+            builder.excludeFieldsWithoutExposeAnnotation();
+            Gson gson = builder.create();
             System.out.println("peo=人力配置=>" + gson.toJson(peo));
             System.out.println("ct=Cycle time=>" + gson.toJson(ct));
             System.out.println("ca=产能=>" + gson.toJson(ca));
@@ -391,5 +421,109 @@ public class MainController {
         json = json.replaceAll(" +", " ");
         String[] params = json.trim().split(" ");
         return params;
+    }
+
+    @FXML
+    public void btcInitData(ActionEvent actionEvent) {
+
+        //加载类型
+        String result = OkHttpUtils.getRequest("http://118.31.54.117:7777/api/index/mproduct");
+        Gson gson = new Gson();
+
+        ResultJson<MainProduct> mpList = gson.fromJson(result, new TypeToken<ResultJson<MainProduct>>() {
+        }.getType());
+
+        List<MainProduct> mps = mpList.getData();
+        cbLineNameList.getItems().clear();
+        mps.forEach(mainProduct -> {
+            cbLineNameList.getItems().addAll(mainProduct.getName());
+        });
+//        cbLineNameList.getSelectionModel().selectFirst();
+
+        //加载工序
+        cbLineNameList.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+
+                if (mps.size() <= 0) {
+                    MessageBox.error("系统提示", "请先初始化数据");
+                    return;
+                }
+
+                System.out.println("====>" + newValue);
+
+                MainProduct in = mps.get(newValue.intValue());
+
+                String mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&&ltype=1";
+                String r = OkHttpUtils.getRequest(mpUrl);
+                ResultJson<Production> list = gson.fromJson(r, new TypeToken<ResultJson<Production>>() {
+                }.getType());
+
+                productionList = list.getData();
+//                ObservableList<Production> strList = FXCollections.observableArrayList(productionList);
+//                lvData.setItems(strList);
+
+                ObservableList<Production> strList = FXCollections.observableArrayList(productionList);
+                tVData.setItems(strList);
+
+                check.setCellValueFactory(cellData -> cellData.getValue().myCheckbox.getCheckBox());
+
+                index.setCellValueFactory(cellData -> new SimpleStringProperty("" + cellData.getValue().getId()));
+                flowName.setCellValueFactory(new PropertyValueFactory("lname"));
+                cTime.setCellValueFactory(new PropertyValueFactory("purect"));
+                techNeed.setCellValueFactory(new PropertyValueFactory("group"));
+
+
+            }
+        });
+
+
+    }
+
+    @FXML
+    public void createLingo() {
+        String peoCount = peoTotalCount.getText().trim().toString();
+        if (StringUtils.isEmpty(peoCount)) {
+            MessageBox.error("系统提示", "填写人数");
+            return;
+        }
+        String path = filePath.getText().trim().toString();
+        if (StringUtils.isEmpty(path)) {
+            MessageBox.error("系统提示", "填写算法文件路径");
+            return;
+        }
+        ObservableList<Production> list = tVData.getItems();
+        if (list.size() == 0) {
+            MessageBox.error("系统提示", "请选择工序");
+            return;
+        }
+
+        line.setLineName(list.get(0).getLname() + "," + list.get(0).getId());
+        List<Production> productions = new ArrayList<>();
+        for (Production o : list) {
+            if (o.myCheckbox.isSelected()) {
+                productions.add(o);
+            }
+        }
+        if (productions.size() == 0) {
+            MessageBox.error("系统提示", "请选择工序");
+            return;
+        }
+        line.setDataQty(list.size());
+        line.setPeoTotalCount(Integer.parseInt(peoCount));
+
+        String re = LingoGreateUtil.createLingo(line);
+
+        System.out.println("===>" + re);
+
+    }
+
+    @FXML
+    public void chooseFile() {
+        Stage stage = new Stage();
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        File file = directoryChooser.showDialog(stage);
+        String path = file.getPath();
+        filePath.setText(path);
     }
 }

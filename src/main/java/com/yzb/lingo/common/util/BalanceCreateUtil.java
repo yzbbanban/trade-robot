@@ -53,7 +53,7 @@ public class BalanceCreateUtil {
     }
 
 
-    private static List<Production> createBalance(LineBalance lineBalance) {
+    public static List<Production> createBalance(LineBalance lineBalance) {
         //工序列表
         List<Production> productionList = lineBalance.getProductionList();
 
