@@ -97,7 +97,7 @@ public class MainController {
     private LineBalance line = new LineBalance();
     private List<Production> productionList;
 
-    private Integer typeId;
+    private Integer typeId = 1;
 
     /**
      * 显示消息按钮的单击事件 不用了
@@ -432,6 +432,7 @@ public class MainController {
 
         cbType.getItems().clear();
         cbType.getItems().addAll("成品", "车缝成品", "自定义");
+        cbType.getSelectionModel().selectFirst();
         //加载类型
         String result = OkHttpUtils.getRequest("http://118.31.54.117:7777/api/index/mproduct");
         Gson gson = new Gson();
@@ -450,6 +451,9 @@ public class MainController {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 typeId = newValue.intValue() + 1;
+                if (typeId == 3) {
+                    typeId = 1;
+                }
 
             }
         });
@@ -460,11 +464,6 @@ public class MainController {
 
                 if (mps.size() <= 0) {
                     MessageBox.error("系统提示", "请先初始化数据");
-                    return;
-                }
-
-                if (typeId == 0) {
-                    MessageBox.error("系统提示", "请选择类型");
                     return;
                 }
 
@@ -536,6 +535,7 @@ public class MainController {
         BalanceCreateUtil.createBalance(line);
         String re = LingoGreateUtil.createLingo(line);
 
+        //生成文件
         System.out.println("===>" + re);
 
     }

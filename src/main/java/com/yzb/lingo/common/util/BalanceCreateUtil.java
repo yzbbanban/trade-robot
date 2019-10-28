@@ -3,10 +3,7 @@ package com.yzb.lingo.common.util;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import com.yzb.lingo.domain.LineBalance;
-import com.yzb.lingo.domain.MainProduct;
-import com.yzb.lingo.domain.Production;
-import com.yzb.lingo.domain.ResultJson;
+import com.yzb.lingo.domain.*;
 
 import java.util.List;
 
@@ -26,14 +23,14 @@ public class BalanceCreateUtil {
 
         String mpUrl = "http://118.31.54.117:7777/api/index/product?mname=5&ltype=1";
 
-       String rl = OkHttpUtils.getRequest(mpUrl);
+        String rl = OkHttpUtils.getRequest(mpUrl);
 
         JsonElement jsonElement = gson.fromJson(rl, JsonElement.class);
 
 
         JsonElement js = jsonElement.getAsJsonObject().get("data");
 
-        List<Production>  productionList = gson.fromJson(js, new TypeToken<List<Production>>() {
+        List<Production> productionList = gson.fromJson(js, new TypeToken<List<ProductO>>() {
         }.getType());
         //组装数据
         //工序数量
@@ -58,16 +55,14 @@ public class BalanceCreateUtil {
         List<Production> productionList = lineBalance.getProductionList();
 
         int paramaterRow = 0;
-        //计算需要工序
-        double stTime = System.currentTimeMillis();
         //工序数量
         int dataDty = lineBalance.getDataQty();
         //工序群组判断：获取是不是手工，手工可以和任何工序联系
         //获取群组
         for (int i = 0; i < dataDty; i++) {
             Production production = productionList.get(i);
-
-            if (i == 1) {
+            production.setType("To ai");
+            if (i == 0) {
                 production.setAi("s");
                 String bj = "a" + (i + 1);
                 production.setBj(bj);
@@ -86,6 +81,8 @@ public class BalanceCreateUtil {
         int exitIfFlag;
         String startProcessType;
         double pij = 0;
+
+        Gson gson = new Gson();
 
         for (int i = 0; i < dataDty; i++) {
             Production production = productionList.get(i);
@@ -143,7 +140,7 @@ public class BalanceCreateUtil {
         productionList.get(paramaterRow).setChangeParam("" + 1);
         paramaterRow = paramaterRow + 1;
 
-
+        System.out.println("paramaterRow:" + paramaterRow);
         String ai, bi, fAiIn, fAiOut, fBiIn, fBiOut;
         for (int i = 0; i < dataDty; i++) {
             Production pi = productionList.get(i);
@@ -152,7 +149,6 @@ public class BalanceCreateUtil {
 
             for (int j = 0; j < paramaterRow; j++) {
                 Production pj = productionList.get(j);
-                productionList.add(new Production());
                 if (ai.equals(pj.getBj())) {
                     if (i == 0) {
                         fAiIn = "" + 1;
@@ -164,7 +160,7 @@ public class BalanceCreateUtil {
                 }
                 if (ai.equals(pj.getAi())) {
                     fAiOut = "" + 0;
-                    pi.setBiIn(fAiOut);
+                    pi.setAiOut(fAiOut);
                 }
                 if (bi.equals(pj.getBj())) {
                     fBiIn = "" + 0;
@@ -183,6 +179,9 @@ public class BalanceCreateUtil {
             }
 
         }
+
+        System.out.println(gson.toJson(productionList));
+
         return productionList;
 
     }

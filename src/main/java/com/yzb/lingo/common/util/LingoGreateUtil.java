@@ -29,6 +29,7 @@ public class LingoGreateUtil {
             }
         }
 
+
         String aibj, biaj;
 
         StringBuilder stringX = new StringBuilder();
@@ -49,33 +50,34 @@ public class LingoGreateUtil {
         //建立目标函数
         stringX.append("max = @smin(");
 
+
         //完成目標函數caibj
         for (int i = 0; i < typeB; i++) {
             // 流程数据：流程工序
             int index = typeA + i;
             Production pro = productionList.get(index);
             aibj = pro.getAi() + pro.getBj();
-            stringX.append(stringX + "c" + aibj);
+            stringX.append("c" + aibj);
             if (i != typeB - 1) {
-                stringX.append(stringX + ",");
+                stringX.append(",");
             }
         }
 
         //完成目標函數maibj
-        stringX.append(stringX + ")-messs*(");
+        stringX.append(")-messs*(");
         for (int i = 0; i < typeB; i++) {
             // 流程数据：流程工序
             int index = typeA + i;
             Production pro = productionList.get(index);
             aibj = pro.getAi() + pro.getBj();
-            stringX.append(stringX + "m" + aibj);
+            stringX.append("m" + aibj);
             if (i != typeB - 1) {
-                stringX.append(stringX + "+");
+                stringX.append("+");
             }
         }
 
         //得出 max 结果 目標函數收尾
-        stringX.append(stringX + ");\n");
+        stringX.append(");\n");
 
         lingoRow = lingoRow + 2;
 
@@ -135,7 +137,7 @@ public class LingoGreateUtil {
 
         for (int i = 0; i < typeA; i++) {
 
-            ai = "a" + i + 1;
+            ai = "a" + (i + 1);
             stringX = new StringBuilder();
 
             for (int j = 0; j < typeA + typeB; j++) {
@@ -169,7 +171,7 @@ public class LingoGreateUtil {
 
         for (int i = 0; i < typeA; i++) {
 
-            bi = "b" + i + 1;
+            bi = "b" + (i + 1);
             stringX = new StringBuilder();
 
             for (int j = 0; j < typeA + typeB; j++) {
