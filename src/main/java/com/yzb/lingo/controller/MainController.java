@@ -1,10 +1,11 @@
 package com.yzb.lingo.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.yzb.lingo.common.component.ChildFrame;
 import com.yzb.lingo.common.component.MessageBox;
+import com.yzb.lingo.common.util.BalanceCreateUtil;
 import com.yzb.lingo.common.util.LingoGreateUtil;
 import com.yzb.lingo.common.util.OkHttpUtils;
 import com.yzb.lingo.domain.*;
@@ -75,6 +76,9 @@ public class MainController {
     private ChoiceBox<String> cbLineNameList;
 
     @FXML
+    private ChoiceBox<String> cbType;
+
+    @FXML
     private TableView tVData;
     @FXML
     private TableColumn<Production, String> index;
@@ -92,6 +96,8 @@ public class MainController {
 
     private LineBalance line = new LineBalance();
     private List<Production> productionList;
+
+    private Integer typeId;
 
     /**
      * 显示消息按钮的单击事件 不用了
@@ -268,9 +274,7 @@ public class MainController {
             }
 
             //组装数据
-            GsonBuilder builder = new GsonBuilder();
-            builder.excludeFieldsWithoutExposeAnnotation();
-            Gson gson = builder.create();
+            Gson gson = new Gson();
             System.out.println("peo=人力配置=>" + gson.toJson(peo));
             System.out.println("ct=Cycle time=>" + gson.toJson(ct));
             System.out.println("ca=产能=>" + gson.toJson(ca));
@@ -426,6 +430,8 @@ public class MainController {
     @FXML
     public void btcInitData(ActionEvent actionEvent) {
 
+        cbType.getItems().clear();
+        cbType.getItems().addAll("成品", "车缝成品", "自定义");
         //加载类型
         String result = OkHttpUtils.getRequest("http://118.31.54.117:7777/api/index/mproduct");
         Gson gson = new Gson();
@@ -440,6 +446,13 @@ public class MainController {
         });
 //        cbLineNameList.getSelectionModel().selectFirst();
 
+        cbType.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                typeId = newValue.intValue() + 1;
+
+            }
+        });
         //加载工序
         cbLineNameList.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -450,16 +463,23 @@ public class MainController {
                     return;
                 }
 
-                System.out.println("====>" + newValue);
+                if (typeId == 0) {
+                    MessageBox.error("系统提示", "请选择类型");
+                    return;
+                }
 
                 MainProduct in = mps.get(newValue.intValue());
 
-                String mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&&ltype=1";
+                String mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&&ltype=" + typeId;
                 String r = OkHttpUtils.getRequest(mpUrl);
-                ResultJson<Production> list = gson.fromJson(r, new TypeToken<ResultJson<Production>>() {
-                }.getType());
 
-                productionList = list.getData();
+                JsonElement jsonElement = gson.fromJson(r, JsonElement.class);
+
+
+                JsonElement js = jsonElement.getAsJsonObject().get("data");
+
+                productionList = gson.fromJson(js, new TypeToken<List<Production>>() {
+                }.getType());
 //                ObservableList<Production> strList = FXCollections.observableArrayList(productionList);
 //                lvData.setItems(strList);
 
@@ -511,11 +531,22 @@ public class MainController {
         }
         line.setDataQty(list.size());
         line.setPeoTotalCount(Integer.parseInt(peoCount));
+        line.setProductionList(productions);
 
+        BalanceCreateUtil.createBalance(line);
         String re = LingoGreateUtil.createLingo(line);
 
         System.out.println("===>" + re);
 
+    }
+
+    @FXML
+    public void btcAllSelect() {
+        ObservableList<Production> list = tVData.getItems();
+        for (Production o : list) {
+            o.myCheckbox.getCheckBox().getValue().setSelected(true);
+
+        }
     }
 
     @FXML

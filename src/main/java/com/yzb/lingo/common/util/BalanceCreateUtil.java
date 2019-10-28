@@ -1,6 +1,7 @@
 package com.yzb.lingo.common.util;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.yzb.lingo.domain.LineBalance;
 import com.yzb.lingo.domain.MainProduct;
@@ -23,28 +24,27 @@ public class BalanceCreateUtil {
         ResultJson<MainProduct> mpList = gson.fromJson(result, new TypeToken<ResultJson<MainProduct>>() {
         }.getType());
 
-        String mpUrl = "http://118.31.54.117:7777/api/index/product?mname=5&&ltype=1";
+        String mpUrl = "http://118.31.54.117:7777/api/index/product?mname=5&ltype=1";
 
-        result = OkHttpUtils.getRequest(mpUrl);
+       String rl = OkHttpUtils.getRequest(mpUrl);
+
+        JsonElement jsonElement = gson.fromJson(rl, JsonElement.class);
 
 
-        ResultJson<Production> list = gson.fromJson(result, new TypeToken<ResultJson<Production>>() {
+        JsonElement js = jsonElement.getAsJsonObject().get("data");
+
+        List<Production>  productionList = gson.fromJson(js, new TypeToken<List<Production>>() {
         }.getType());
-
-
-        List<Production> productionList = list.getData();
-
-
         //组装数据
         //工序数量
-        int dataDty = list.getData().size();
+        int dataDty = productionList.size();
 
         LineBalance line = new LineBalance();
         line.setDataQty(dataDty);
         line.setPeoTotalCount(20);
         line.setProductionList(productionList);
         List<Production> l = createBalance(line);
-        line.setLineName("123");
+        line.setLineName(line.getLineName());
         System.out.println("xxxxx>" + gson.toJson(l));
 
         String re = LingoGreateUtil.createLingo(line);
