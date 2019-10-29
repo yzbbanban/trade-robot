@@ -517,7 +517,7 @@ public class MainController {
             return;
         }
 
-        line.setLineName(list.get(0).getLname() + "," + list.get(0).getId());
+        line.setLineName(list.get(0).getLname() + "_" + list.get(0).getId());
         List<Production> productions = new ArrayList<>();
         for (Production o : list) {
             if (o.myCheckbox.isSelected()) {
@@ -537,6 +537,9 @@ public class MainController {
 
         //生成文件
         System.out.println("===>" + re);
+
+
+
 
     }
 

@@ -81,7 +81,7 @@ public class LingoGreateUtil {
 
         lingoRow = lingoRow + 2;
 
-        stringX.append("!基本條件;");
+        stringX.append("!基本條件;\n");
         lingoRow = lingoRow + 1;
         stringX.append("fsa1=1;");
         lingoRow = lingoRow + 1;
@@ -97,13 +97,13 @@ public class LingoGreateUtil {
             int index = typeA + i;
             Production pro = productionList.get(index);
             aibj = pro.getAi() + pro.getBj();
-            stringX.append("p" + aibj + pro.getPij());
+            stringX.append("p" + aibj +"="+ pro.getPij()+";\n");
             lingoRow = lingoRow + 1;
         }
 
         lingoRow = lingoRow + 1;
 
-        stringX.append("!合併站產能表達;");
+        stringX.append("!合併站產能表達;\n");
         lingoRow = lingoRow + 1;
 
         for (int i = 0; i < typeB; i++) {
@@ -115,7 +115,7 @@ public class LingoGreateUtil {
         }
 
         lingoRow = lingoRow + 1;
-        stringX.append("!配了faibj 就要配waibi，否則扣極大值;");
+        stringX.append("!配了faibj 就要配waibi，否則扣極大值;\n");
         lingoRow = lingoRow + 1;
 
         for (int i = 0; i < typeB; i++) {
