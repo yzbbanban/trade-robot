@@ -110,7 +110,7 @@ public class LingoGreateUtil {
             int index = typeA + i;
             Production pro = productionList.get(index);
             aibj = pro.getAi() + pro.getBj();
-            stringX.append("c" + aibj + " = @if((w" + aibj + "*f" + aibj + "#eq#0),messs,(w" + aibj + "*f" + aibj + "*3600/p" + aibj + "));");
+            stringX.append("c" + aibj + " = @if((w" + aibj + "*f" + aibj + "#eq#0),messs,(w" + aibj + "*f" + aibj + "*3600/p" + aibj + "));\n");
             lingoRow = lingoRow + 1;
         }
 
@@ -122,7 +122,7 @@ public class LingoGreateUtil {
             int index = typeA + i;
             Production pro = productionList.get(index);
             aibj = pro.getAi() + pro.getBj();
-            stringX.append("m" + aibj + " = @if(f" + aibj + "#eq#1,@if(w" + aibj + "#eq#0,1,0),0);");
+            stringX.append("m" + aibj + " = @if(f" + aibj + "#eq#1,@if(w" + aibj + "#eq#0,1,0),0);\n");
             lingoRow = lingoRow + 1;
         }
 
@@ -159,13 +159,13 @@ public class LingoGreateUtil {
                 }
             }
 
-            stringBuilder.append(stringX).append(";");
+            stringBuilder.append(stringX).append(";\n");
             lingoRow = lingoRow + 1;
         }
 
 
         lingoRow = lingoRow + 1;
-        stringBuilder.append("!bj;");
+        stringBuilder.append("!bj;\n");
         lingoRow = lingoRow + 1;
 
 
@@ -195,13 +195,13 @@ public class LingoGreateUtil {
                 }
             }
 
-            stringBuilder.append(stringX).append(";");
+            stringBuilder.append(stringX).append(";\n");
             lingoRow = lingoRow + 1;
 
         }
 
         lingoRow = lingoRow + 1;
-        stringBuilder.append("!人力限制式;");
+        stringBuilder.append("!人力限制式;\n");
         lingoRow = lingoRow + 1;
         stringX = new StringBuilder();
 
@@ -212,16 +212,16 @@ public class LingoGreateUtil {
             stringX.append("+f" + aibj + "*w" + aibj);
         }
 
-        stringX.append("=mp;");
+        stringX.append("=mp;\n");
         stringBuilder.append(stringX);
         lingoRow = lingoRow + 1;
 
         lingoRow = lingoRow + 1;
-        stringBuilder.append("!變數限制設定x");
+        stringBuilder.append("!變數限制設定x\n");
         lingoRow = lingoRow + 1;
-        stringBuilder.append("@gin(x) : x取整數");
+        stringBuilder.append("@gin(x) : x取整數\n");
         lingoRow = lingoRow + 1;
-        stringBuilder.append("@bin(x) : x取0,1;");
+        stringBuilder.append("@bin(x) : x取0,1;\n");
         lingoRow = lingoRow + 1;
 
         for (int i = 1; i < typeA + typeB; i++) {
@@ -229,7 +229,7 @@ public class LingoGreateUtil {
             Production pro = productionList.get(i);
             aibj = pro.getAi() + pro.getBj();
 
-            stringX.append("@bin(f" + aibj + ");");
+            stringX.append("@bin(f" + aibj + ");\n");
 
             stringBuilder.append(stringX);
             lingoRow = lingoRow + 1;
