@@ -8,6 +8,7 @@ import com.yzb.lingo.common.component.MessageBox;
 import com.yzb.lingo.common.util.BalanceCreateUtil;
 import com.yzb.lingo.common.util.LingoGreateUtil;
 import com.yzb.lingo.common.util.OkHttpUtils;
+import com.yzb.lingo.common.util.SaveToFileUtil;
 import com.yzb.lingo.domain.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -538,7 +539,7 @@ public class MainController {
         //生成文件
         System.out.println("===>" + re);
 
-
+        SaveToFileUtil.outMessageToFile(re, path, line.getLineName());
 
 
     }
