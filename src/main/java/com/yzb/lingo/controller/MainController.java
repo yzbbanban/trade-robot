@@ -432,6 +432,8 @@ public class MainController {
     public void btcInitData(ActionEvent actionEvent) {
 
         cbType.getItems().clear();
+        //1车缝 2包装 3线外加工
+        //成品: 1+2+3 车缝成品: 1+3 自定义: 1+2+3
         cbType.getItems().addAll("成品", "车缝成品", "自定义");
         cbType.getSelectionModel().selectFirst();
         //加载类型
@@ -452,9 +454,6 @@ public class MainController {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 typeId = newValue.intValue() + 1;
-                if (typeId == 3) {
-                    typeId = 1;
-                }
 
             }
         });
@@ -469,17 +468,58 @@ public class MainController {
                 }
 
                 MainProduct in = mps.get(newValue.intValue());
+                //1车缝 2包装 3线外加工
+                //成品: 1+2+3 车缝成品: 1+3 自定义: 1+2+3
+                if (typeId == 1 || typeId == 3) {
+                    String mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&ltype=" + 1;
+                    String r = OkHttpUtils.getRequest(mpUrl);
+                    JsonElement jsonElement = gson.fromJson(r, JsonElement.class);
+                    JsonElement js = jsonElement.getAsJsonObject().get("data");
+                    productionList = gson.fromJson(js, new TypeToken<List<Production>>() {
+                    }.getType());
 
-                String mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&&ltype=" + typeId;
-                String r = OkHttpUtils.getRequest(mpUrl);
+                    mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&ltype=" + 2;
+                    r = OkHttpUtils.getRequest(mpUrl);
+                    jsonElement = gson.fromJson(r, JsonElement.class);
+                    js = jsonElement.getAsJsonObject().get("data");
+                    List<Production> l1 = gson.fromJson(js, new TypeToken<List<Production>>() {
+                    }.getType());
+                    if (l1 != null) {
+                        productionList.addAll(l1);
+                    }
 
-                JsonElement jsonElement = gson.fromJson(r, JsonElement.class);
+                    mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&ltype=" + 3;
+                    r = OkHttpUtils.getRequest(mpUrl);
+                    jsonElement = gson.fromJson(r, JsonElement.class);
+                    js = jsonElement.getAsJsonObject().get("data");
+                    List<Production> l2 = gson.fromJson(js, new TypeToken<List<Production>>() {
+                    }.getType());
+                    if (l2 != null) {
+                        productionList.addAll(l2);
+                    }
+                }
+
+                if (typeId == 2) {
+                    String mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&ltype=" + 1;
+                    String r = OkHttpUtils.getRequest(mpUrl);
+                    JsonElement jsonElement = gson.fromJson(r, JsonElement.class);
+                    JsonElement js = jsonElement.getAsJsonObject().get("data");
+                    productionList.addAll(gson.fromJson(js, new TypeToken<List<Production>>() {
+                    }.getType()));
+
+                    mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&ltype=" + 3;
+                    r = OkHttpUtils.getRequest(mpUrl);
+                    jsonElement = gson.fromJson(r, JsonElement.class);
+                    js = jsonElement.getAsJsonObject().get("data");
+                    List<Production> l1 = gson.fromJson(js, new TypeToken<List<Production>>() {
+                    }.getType());
+                    if (l1 != null) {
+                        productionList.addAll(l1);
+                    }
+
+                }
 
 
-                JsonElement js = jsonElement.getAsJsonObject().get("data");
-
-                productionList = gson.fromJson(js, new TypeToken<List<Production>>() {
-                }.getType());
 //                ObservableList<Production> strList = FXCollections.observableArrayList(productionList);
 //                lvData.setItems(strList);
 
@@ -537,7 +577,7 @@ public class MainController {
         String re = LingoGreateUtil.createLingo(line);
 
         //生成文件
-        System.out.println("===>" + re);
+//        System.out.println("===>" + re);
 
         SaveToFileUtil.outMessageToFile(re, path, line.getLineName());
 

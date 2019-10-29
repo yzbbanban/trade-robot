@@ -89,7 +89,7 @@ public class LingoGreateUtil {
         lingoRow = lingoRow + 1;
         stringX.append("mp=" + mp + ";");
         lingoRow = lingoRow + 1;
-        stringX.append("messs=10000;");
+        stringX.append("messs=10000;\n");
         lingoRow = lingoRow + 1;
 
         //建立paibj
@@ -97,7 +97,7 @@ public class LingoGreateUtil {
             int index = typeA + i;
             Production pro = productionList.get(index);
             aibj = pro.getAi() + pro.getBj();
-            stringX.append("p" + aibj +"="+ pro.getPij()+";\n");
+            stringX.append("p" + aibj + "=" + pro.getPij() + ";\n");
             lingoRow = lingoRow + 1;
         }
 
@@ -127,9 +127,9 @@ public class LingoGreateUtil {
         }
 
         lingoRow = lingoRow + 1;
-        stringX.append("!限制式 : in = out ;");
+        stringX.append("!限制式 : in = out ;\n");
         lingoRow = lingoRow + 1;
-        stringX.append("!ai ;");
+        stringX.append("!ai ;\n");
 
         String ai, bj, bi;
 
@@ -169,7 +169,7 @@ public class LingoGreateUtil {
         lingoRow = lingoRow + 1;
 
 
-        for (int i = 0; i < typeA; i++) {
+        for (int i = 0; i < typeA - 1; i++) {
 
             bi = "b" + (i + 1);
             stringX = new StringBuilder();
@@ -205,7 +205,7 @@ public class LingoGreateUtil {
         lingoRow = lingoRow + 1;
         stringX = new StringBuilder();
 
-        for (int i = 0; i < typeB; i++) {
+        for (int i = 0; i < typeB - 1; i++) {
             int index = typeA + i;
             Production pro = productionList.get(index);
             aibj = pro.getAi() + pro.getBj();

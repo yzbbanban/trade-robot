@@ -42,7 +42,8 @@ public class SaveToFileUtil {
             try {
                 Runtime.getRuntime().exec(sets);
             } catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }
 

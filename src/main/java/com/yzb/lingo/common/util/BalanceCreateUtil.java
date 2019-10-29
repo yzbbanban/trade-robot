@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.yzb.lingo.domain.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -80,7 +81,7 @@ public class BalanceCreateUtil {
         //建立 A2
         int exitIfFlag;
         String startProcessType;
-        double pij = 0;
+        BigDecimal pij = BigDecimal.ZERO;
 
         Gson gson = new Gson();
 
@@ -88,19 +89,20 @@ public class BalanceCreateUtil {
             Production production = productionList.get(i);
             exitIfFlag = 0;
             // 读取起点工序种类
-            startProcessType = production.getLname();
+            startProcessType = production.getGroup();
+            pij = BigDecimal.ZERO;
 
             for (int j = i; j < dataDty; j++) {
                 Production productionJ = productionList.get(j);
                 //避免除了手工站以外发生不同工种合并
                 //类型为手工则可以正常合并
                 if ("手工".equals(startProcessType)) {
-                    startProcessType = productionJ.getLname();
+                    startProcessType = productionJ.getGroup();
                 }
 
                 //j类型不是手工，还有 spt 不是手工，则不可以可以合并
-                if (!productionJ.getLname().equals("手工")
-                        && !productionJ.getLname().equals(startProcessType)) {
+                if (!productionJ.getGroup().equals("手工")
+                        && !productionJ.getGroup().equals(startProcessType)) {
                     exitIfFlag = 1;
                 }
 
@@ -113,9 +115,12 @@ public class BalanceCreateUtil {
                     pd.setBj("b" + (j + 1));
                     pd.setFlow("f" + pd.getAi() + pd.getBj());
                     pd.setPeoParam("w" + pd.getAi() + pd.getBj());
-                    pij = pij + Double.parseDouble(productionJ.getPurect());
+                    pij = pij.add(new BigDecimal(productionJ.getPurect()))
+                            .stripTrailingZeros();
                     pd.setPij("" + pij);
-                    pd.setUph("" + 3600 / pij);
+                    pd.setUph("" + new BigDecimal(3600)
+                            .divide(pij, 2, BigDecimal.ROUND_HALF_UP)
+                            .stripTrailingZeros().toPlainString());
                     pd.setMulUph("" + 10000);
                     pd.setShoulian("" + 0);
                     productionList.add(pd);
