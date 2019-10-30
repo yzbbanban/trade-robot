@@ -206,9 +206,14 @@ public class MainController {
             jsonStr.forEach(json -> {
                 if (json.contains("Title")) {
                     String[] res = json.split("_");
-                    parseLingo.setTableName(res[0]);
-                    parseLingo.setCalcType(res[1]);
-                    parseLingo.setBanbie(res[2]);
+                    int len = res.length;
+                    StringBuilder name = new StringBuilder();
+                    for (int i = 0; i < len - 3; i++) {
+                        name.append(res[i]);
+                    }
+                    parseLingo.setTableName(name.toString());
+                    parseLingo.setCalcType(res[len - 2]);
+                    parseLingo.setBanbie(res[len - 1]);
                 }
                 //找到总人数
                 if (json.contains("MP")) {
@@ -534,7 +539,7 @@ public class MainController {
         Collections.sort(productionList, new Comparator<Production>() {
             @Override
             public int compare(Production o1, Production o2) {
-                return o1.getId() - o2.getId();
+                return o1.getXuhao() - o2.getXuhao();
             }
         });
 
@@ -547,7 +552,7 @@ public class MainController {
             check.setCellValueFactory(null);
         }
 
-        index.setCellValueFactory(cellData -> new SimpleStringProperty("" + cellData.getValue().getId()));
+        index.setCellValueFactory(cellData -> new SimpleStringProperty("" + cellData.getValue().getXuhao()));
         flowName.setCellValueFactory(new PropertyValueFactory("lname"));
         cTime.setCellValueFactory(new PropertyValueFactory("purect"));
         techNeed.setCellValueFactory(new PropertyValueFactory("group"));

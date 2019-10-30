@@ -10,6 +10,8 @@ public class Production {
 
     private Integer id;
 
+    private Integer xuhao;
+
     /**
      * 流程
      */
@@ -105,20 +107,20 @@ public class Production {
 
     private String startProcessType;
 
-    public MyCheckbox getMyCheckbox() {
-        return myCheckbox;
-    }
-
-    public void setMyCheckbox(MyCheckbox myCheckbox) {
-        this.myCheckbox = myCheckbox;
-    }
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getXuhao() {
+        return xuhao;
+    }
+
+    public void setXuhao(Integer xuhao) {
+        this.xuhao = xuhao;
     }
 
     public String getLname() {
@@ -285,6 +287,7 @@ public class Production {
     public String toString() {
         return "Production{" +
                 "id=" + id +
+                ", xuhao=" + xuhao +
                 ", lname='" + lname + '\'' +
                 ", purect='" + purect + '\'' +
                 ", needName='" + needName + '\'' +

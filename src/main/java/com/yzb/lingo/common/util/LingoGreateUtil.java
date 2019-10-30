@@ -235,6 +235,21 @@ public class LingoGreateUtil {
             lingoRow = lingoRow + 1;
         }
 
+        lingoRow = lingoRow + 1;
+
+        for (int i = 0; i < typeB - 1; i++) {
+
+            stringX = new StringBuilder();
+            Production pro = productionList.get(i + typeA);
+            aibj = pro.getAi() + pro.getBj();
+
+            stringX.append("@gin(w" + aibj + ");\n");
+
+            stringBuilder.append(stringX);
+            lingoRow = lingoRow + 1;
+
+        }
+
 
         return stringBuilder.toString();
     }
