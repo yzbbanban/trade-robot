@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.yzb.lingo.common.component.ChildFrame;
 import com.yzb.lingo.common.component.MessageBox;
+import com.yzb.lingo.common.cosntant.UrlConstant;
 import com.yzb.lingo.common.util.BalanceCreateUtil;
 import com.yzb.lingo.common.util.LingoGreateUtil;
 import com.yzb.lingo.common.util.OkHttpUtils;
@@ -392,8 +393,8 @@ public class MainController {
             goods.setCellValueFactory(new PropertyValueFactory("goods"));
             loadRate.setCellValueFactory(new PropertyValueFactory("loadRate"));
             unit.setCellValueFactory(new PropertyValueFactory("unit"));
-
-            tView.setItems(list); //tableview添加list
+            //tableview添加list
+            tView.setItems(list);
 
 
         } catch (Exception e) {
@@ -437,7 +438,7 @@ public class MainController {
         cbType.getItems().addAll("成品", "车缝成品", "自定义");
         cbType.getSelectionModel().selectFirst();
         //加载类型
-        String result = OkHttpUtils.getRequest("http://118.31.54.117:7777/api/index/mproduct");
+        String result = OkHttpUtils.getRequest(UrlConstant.M_PRODUCT_API);
         Gson gson = new Gson();
 
         ResultJson<MainProduct> mpList = gson.fromJson(result, new TypeToken<ResultJson<MainProduct>>() {
@@ -448,7 +449,6 @@ public class MainController {
         mps.forEach(mainProduct -> {
             cbLineNameList.getItems().addAll(mainProduct.getName());
         });
-//        cbLineNameList.getSelectionModel().selectFirst();
 
         cbType.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -468,60 +468,31 @@ public class MainController {
                 }
 
                 MainProduct in = mps.get(newValue.intValue());
+                int id = in.getId();
+
                 //1车缝 2包装 3线外加工
                 //成品: 1+2+3 车缝成品: 1+3 自定义: 1+2+3
                 if (typeId == 1 || typeId == 3) {
-                    String mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&ltype=" + 1;
-                    String r = OkHttpUtils.getRequest(mpUrl);
-                    JsonElement jsonElement = gson.fromJson(r, JsonElement.class);
-                    JsonElement js = jsonElement.getAsJsonObject().get("data");
-                    productionList = gson.fromJson(js, new TypeToken<List<Production>>() {
-                    }.getType());
-
-                    mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&ltype=" + 2;
-                    r = OkHttpUtils.getRequest(mpUrl);
-                    jsonElement = gson.fromJson(r, JsonElement.class);
-                    js = jsonElement.getAsJsonObject().get("data");
-                    List<Production> l1 = gson.fromJson(js, new TypeToken<List<Production>>() {
-                    }.getType());
+                    productionList = getProductResult(id, 1);
+                    List<Production> l1 = getProductResult(id, 2);
                     if (l1 != null) {
                         productionList.addAll(l1);
                     }
-
-                    mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&ltype=" + 3;
-                    r = OkHttpUtils.getRequest(mpUrl);
-                    jsonElement = gson.fromJson(r, JsonElement.class);
-                    js = jsonElement.getAsJsonObject().get("data");
-                    List<Production> l2 = gson.fromJson(js, new TypeToken<List<Production>>() {
-                    }.getType());
+                    List<Production> l2 = getProductResult(id, 3);
                     if (l2 != null) {
                         productionList.addAll(l2);
                     }
+
                 }
 
                 if (typeId == 2) {
-                    String mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&ltype=" + 1;
-                    String r = OkHttpUtils.getRequest(mpUrl);
-                    JsonElement jsonElement = gson.fromJson(r, JsonElement.class);
-                    JsonElement js = jsonElement.getAsJsonObject().get("data");
-                    productionList.addAll(gson.fromJson(js, new TypeToken<List<Production>>() {
-                    }.getType()));
-
-                    mpUrl = "http://118.31.54.117:7777/api/index/product?mname=" + in.getId() + "&ltype=" + 3;
-                    r = OkHttpUtils.getRequest(mpUrl);
-                    jsonElement = gson.fromJson(r, JsonElement.class);
-                    js = jsonElement.getAsJsonObject().get("data");
-                    List<Production> l1 = gson.fromJson(js, new TypeToken<List<Production>>() {
-                    }.getType());
+                    productionList = getProductResult(id, 1);
+                    List<Production> l1 = getProductResult(id, 3);
                     if (l1 != null) {
                         productionList.addAll(l1);
                     }
 
                 }
-
-
-//                ObservableList<Production> strList = FXCollections.observableArrayList(productionList);
-//                lvData.setItems(strList);
 
                 ObservableList<Production> strList = FXCollections.observableArrayList(productionList);
                 tVData.setItems(strList);
@@ -537,8 +508,8 @@ public class MainController {
             }
         });
 
-
     }
+
 
     @FXML
     public void createLingo() {
@@ -577,10 +548,7 @@ public class MainController {
         String re = LingoGreateUtil.createLingo(line);
 
         //生成文件
-//        System.out.println("===>" + re);
-
         SaveToFileUtil.outMessageToFile(re, path, line.getLineName());
-
 
     }
 
@@ -601,4 +569,15 @@ public class MainController {
         String path = file.getPath();
         filePath.setText(path);
     }
+
+    private List<Production> getProductResult(int id, int type) {
+        Gson gson = new Gson();
+        String mpUrl = String.format(UrlConstant.PRODUCT_API, id, type);
+        String r = OkHttpUtils.getRequest(mpUrl);
+        JsonElement jsonElement = gson.fromJson(r, JsonElement.class);
+        JsonElement js = jsonElement.getAsJsonObject().get("data");
+        return gson.fromJson(js, new TypeToken<List<Production>>() {
+        }.getType());
+    }
+
 }
