@@ -407,6 +407,9 @@ public class MainController {
             tView.setItems(list);
 
 
+            //上传数据
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
