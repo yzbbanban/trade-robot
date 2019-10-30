@@ -9,7 +9,7 @@ public class UrlConstant {
     /**
      * 获取工序api
      */
-    public static final String PRODUCT_API = "http://118.31.54.117:7777/api/index/product?mname=%s&ltype=%s";
+    public static final String PRODUCT_API = "http://118.31.54.117:7777/api/index/product?mname=%s&ltype=%s&edition=%s";
 
     /**
      * 登录api

@@ -25,6 +25,7 @@ public class ParseLingo {
     private int peoCount;
     private String poh;
     private String actualPoh;
+    private String banbie;
     private String toLoadRate;
     private String totalGoods;
     private String toActualGoods;
@@ -44,6 +45,14 @@ public class ParseLingo {
 
     public void setCalcType(String calcType) {
         this.calcType = calcType;
+    }
+
+    public String getBanbie() {
+        return banbie;
+    }
+
+    public void setBanbie(String banbie) {
+        this.banbie = banbie;
     }
 
     public int getProcedure() {
@@ -111,8 +120,7 @@ public class ParseLingo {
     }
 
     @Override
-    public String
-    toString() {
+    public String toString() {
         return "ParseLingo{" +
                 "tableName='" + tableName + '\'' +
                 ", calcType='" + calcType + '\'' +
@@ -120,6 +128,7 @@ public class ParseLingo {
                 ", peoCount=" + peoCount +
                 ", poh='" + poh + '\'' +
                 ", actualPoh='" + actualPoh + '\'' +
+                ", banbie='" + banbie + '\'' +
                 ", toLoadRate='" + toLoadRate + '\'' +
                 ", totalGoods='" + totalGoods + '\'' +
                 ", toActualGoods='" + toActualGoods + '\'' +

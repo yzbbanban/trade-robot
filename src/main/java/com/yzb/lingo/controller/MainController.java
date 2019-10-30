@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.yzb.lingo.common.component.ChildFrame;
 import com.yzb.lingo.common.component.MessageBox;
+import com.yzb.lingo.common.cosntant.GlobleParam;
 import com.yzb.lingo.common.cosntant.UrlConstant;
 import com.yzb.lingo.common.util.BalanceCreateUtil;
 import com.yzb.lingo.common.util.LingoGreateUtil;
@@ -56,6 +57,10 @@ public class MainController {
     private TextField peoTotalCount;
     @FXML
     private TextField filePath;
+    @FXML
+    private Label lbBanbie;
+    @FXML
+    private Label userName;
 
 
     @FXML
@@ -100,6 +105,10 @@ public class MainController {
     private List<Production> productionList;
 
     private Integer typeId = 1;
+    private Integer productId = 1;
+    private MainProduct in;
+    private String productName;
+    private String banbie;
 
     /**
      * 显示消息按钮的单击事件 不用了
@@ -197,8 +206,9 @@ public class MainController {
             jsonStr.forEach(json -> {
                 if (json.contains("Title")) {
                     String[] res = json.split("_");
-                    parseLingo.setTableName(res[1]);
-                    parseLingo.setCalcType(res[2]);
+                    parseLingo.setTableName(res[0]);
+                    parseLingo.setCalcType(res[1]);
+                    parseLingo.setBanbie(res[2]);
                 }
                 //找到总人数
                 if (json.contains("MP")) {
@@ -431,11 +441,11 @@ public class MainController {
 
     @FXML
     public void btcInitData(ActionEvent actionEvent) {
-
+        userName.setText(GlobleParam.loginParam.getNickname());
         cbType.getItems().clear();
         //1车缝 2包装 3线外加工
         //成品: 1+2+3 车缝成品: 1+3 自定义: 1+2+3
-        cbType.getItems().addAll("成品", "车缝成品", "自定义");
+        cbType.getItems().addAll("成品(车缝、包装、线外加工)", "车缝成品（车缝、包装）", "自定义");
         cbType.getSelectionModel().selectFirst();
         //加载类型
         String result = OkHttpUtils.getRequest(UrlConstant.M_PRODUCT_API);
@@ -455,6 +465,13 @@ public class MainController {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 typeId = newValue.intValue() + 1;
 
+                if (in != null) {
+                    //加载数据
+                    int id = in.getId();
+                    String edition = in.getBanbie();
+                    setProList(id, edition);
+                }
+
             }
         });
         //加载工序
@@ -467,46 +484,70 @@ public class MainController {
                     return;
                 }
 
-                MainProduct in = mps.get(newValue.intValue());
+                in = mps.get(newValue.intValue());
+                productName = in.getName();
+                banbie = in.getBanbie();
+                productId = newValue.intValue() + 1;
                 int id = in.getId();
-
-                //1车缝 2包装 3线外加工
-                //成品: 1+2+3 车缝成品: 1+3 自定义: 1+2+3
-                if (typeId == 1 || typeId == 3) {
-                    productionList = getProductResult(id, 1);
-                    List<Production> l1 = getProductResult(id, 2);
-                    if (l1 != null) {
-                        productionList.addAll(l1);
-                    }
-                    List<Production> l2 = getProductResult(id, 3);
-                    if (l2 != null) {
-                        productionList.addAll(l2);
-                    }
-
-                }
-
-                if (typeId == 2) {
-                    productionList = getProductResult(id, 1);
-                    List<Production> l1 = getProductResult(id, 3);
-                    if (l1 != null) {
-                        productionList.addAll(l1);
-                    }
-
-                }
-
-                ObservableList<Production> strList = FXCollections.observableArrayList(productionList);
-                tVData.setItems(strList);
-
-                check.setCellValueFactory(cellData -> cellData.getValue().myCheckbox.getCheckBox());
-
-                index.setCellValueFactory(cellData -> new SimpleStringProperty("" + cellData.getValue().getId()));
-                flowName.setCellValueFactory(new PropertyValueFactory("lname"));
-                cTime.setCellValueFactory(new PropertyValueFactory("purect"));
-                techNeed.setCellValueFactory(new PropertyValueFactory("group"));
-
-
+                String edition = in.getBanbie();
+                lbBanbie.setText(in.getBanbie());
+                //加载数据
+                setProList(id, edition);
             }
         });
+
+    }
+
+    /**
+     * 刷新数据
+     *
+     * @param id      id
+     * @param edition edition
+     */
+    private void setProList(int id, String edition) {
+        //1车缝 2包装 3线外加工
+        //成品: 1+2+3 车缝成品: 1+3 自定义: 1+2+3
+        if (typeId == 1 || typeId == 3) {
+            productionList = getProductResult(id, 1, edition);
+            List<Production> l1 = getProductResult(id, 2, edition);
+            if (l1 != null) {
+                productionList.addAll(l1);
+            }
+            List<Production> l2 = getProductResult(id, 3, edition);
+            if (l2 != null) {
+                productionList.addAll(l2);
+            }
+        }
+
+        if (typeId == 2) {
+            productionList = getProductResult(id, 1, edition);
+            List<Production> l1 = getProductResult(id, 3, edition);
+            if (l1 != null) {
+                productionList.addAll(l1);
+            }
+        }
+
+        //按照序号id排序
+        Collections.sort(productionList, new Comparator<Production>() {
+            @Override
+            public int compare(Production o1, Production o2) {
+                return o1.getId() - o2.getId();
+            }
+        });
+
+        ObservableList<Production> strList = FXCollections.observableArrayList(productionList);
+        tVData.setItems(strList);
+
+        if (typeId == 3) {
+            check.setCellValueFactory(cellData -> cellData.getValue().myCheckbox.getCheckBox());
+        } else {
+            check.setCellValueFactory(null);
+        }
+
+        index.setCellValueFactory(cellData -> new SimpleStringProperty("" + cellData.getValue().getId()));
+        flowName.setCellValueFactory(new PropertyValueFactory("lname"));
+        cTime.setCellValueFactory(new PropertyValueFactory("purect"));
+        techNeed.setCellValueFactory(new PropertyValueFactory("group"));
 
     }
 
@@ -529,12 +570,16 @@ public class MainController {
             return;
         }
 
-        line.setLineName(list.get(0).getLname() + "_" + list.get(0).getId());
+        line.setLineName(productName + "_" + typeId + "_" + banbie);
         List<Production> productions = new ArrayList<>();
-        for (Production o : list) {
-            if (o.myCheckbox.isSelected()) {
-                productions.add(o);
+        if (typeId == 3) {
+            for (Production o : list) {
+                if (o.myCheckbox.isSelected()) {
+                    productions.add(o);
+                }
             }
+        } else {
+            productions.addAll(list);
         }
         if (productions.size() == 0) {
             MessageBox.error("系统提示", "请选择工序");
@@ -570,9 +615,9 @@ public class MainController {
         filePath.setText(path);
     }
 
-    private List<Production> getProductResult(int id, int type) {
+    private List<Production> getProductResult(int id, int type, String edition) {
         Gson gson = new Gson();
-        String mpUrl = String.format(UrlConstant.PRODUCT_API, id, type);
+        String mpUrl = String.format(UrlConstant.PRODUCT_API, id, type, edition);
         String r = OkHttpUtils.getRequest(mpUrl);
         JsonElement jsonElement = gson.fromJson(r, JsonElement.class);
         JsonElement js = jsonElement.getAsJsonObject().get("data");
