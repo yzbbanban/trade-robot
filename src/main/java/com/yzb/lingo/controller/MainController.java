@@ -110,6 +110,8 @@ public class MainController {
     private String productName;
     private String banbie;
 
+    private int[] wtype = new int[]{4, 5, 9, 10, 11};
+
     /**
      * 显示消息按钮的单击事件 不用了
      *
@@ -451,9 +453,18 @@ public class MainController {
     public void btcInitData(ActionEvent actionEvent) {
         userName.setText(GlobleParam.loginParam.getNickname());
         cbType.getItems().clear();
-        //1车缝 2包装 3线外加工
-        //成品: 1+2+3 车缝成品: 1+3 自定义: 1+2+3
-        cbType.getItems().addAll("成品(车缝、包装、线外加工)", "车缝成品（车缝、包装）", "自定义");
+        // 1车缝 2包装 3线外加工
+        // 4 成品: 1+2+3;
+        // 5 车缝成品: 1+3;
+        // 9 成品(不含线外加工)1+2;
+        // 10 车缝成品(不含线外加工）1;
+        // 11自定义: 1+2+3
+        cbType.getItems().addAll(
+                "成品(车缝、包装、线外加工)",
+                "车缝成品(车缝、包装)",
+                "成品(不含线外加工)",
+                "车缝成品(不含线外加工)",
+                "自定义");
         cbType.getSelectionModel().selectFirst();
         //加载类型
         String result = OkHttpUtils.getRequest(UrlConstant.M_PRODUCT_API);
@@ -471,8 +482,7 @@ public class MainController {
         cbType.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                typeId = newValue.intValue() + 1;
-
+                typeId = wtype[newValue.intValue()];
                 if (in != null) {
                     //加载数据
                     int id = in.getId();
@@ -514,8 +524,9 @@ public class MainController {
      */
     private void setProList(int id, String edition) {
         //1车缝 2包装 3线外加工
-        //成品: 1+2+3 车缝成品: 1+3 自定义: 1+2+3
-        if (typeId == 1 || typeId == 3) {
+        //4	成品	1,2,3
+        //11	自訂義	1,2,3
+        if (typeId == 4 || typeId == 11) {
             productionList = getProductResult(id, 1, edition);
             List<Production> l1 = getProductResult(id, 2, edition);
             if (l1 != null) {
@@ -527,12 +538,27 @@ public class MainController {
             }
         }
 
-        if (typeId == 2) {
+        // 5	車縫成品	1,3
+        if (typeId == 5) {
             productionList = getProductResult(id, 1, edition);
             List<Production> l1 = getProductResult(id, 3, edition);
             if (l1 != null) {
                 productionList.addAll(l1);
             }
+        }
+
+        // 9	成品-不含線外加工項目	1,2
+        if (typeId == 9) {
+            productionList = getProductResult(id, 1, edition);
+            List<Production> l1 = getProductResult(id, 2, edition);
+            if (l1 != null) {
+                productionList.addAll(l1);
+            }
+        }
+
+        // 10	車縫成品-不含線外加工項目	1
+        if (typeId == 10) {
+            productionList = getProductResult(id, 1, edition);
         }
 
         //按照序号id排序
