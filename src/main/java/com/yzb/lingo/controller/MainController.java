@@ -104,7 +104,7 @@ public class MainController {
     private LineBalance line = new LineBalance();
     private List<Production> productionList;
 
-    private Integer typeId = 1;
+    private Integer typeId = 4;
     private Integer productId = 1;
     private MainProduct in;
     private String productName;
