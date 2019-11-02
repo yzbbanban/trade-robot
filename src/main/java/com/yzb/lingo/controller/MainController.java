@@ -58,9 +58,13 @@ public class MainController {
     @FXML
     private TextField filePath;
     @FXML
+    private TextField tfRemark;
+    @FXML
     private Label lbBanbie;
     @FXML
     private Label userName;
+    @FXML
+    private Label lRemark;
 
 
     @FXML
@@ -179,7 +183,6 @@ public class MainController {
             }
 
             List<String> jsonStr = FileUtils.readLines(file, "UTF-8");
-
             /*
                 S : 模型起點
                 T : 模型終點
@@ -193,7 +196,6 @@ public class MainController {
                 WA1B1 : 人力配置(第一站)
 
              */
-
             /*
                 计算：
                 3600/PA1B1 负载率  3600/PA*B*   3600/Cycle time
@@ -389,14 +391,26 @@ public class MainController {
             toPeoCount.setText("" + parseLingo.getPeoCount());
             toTableName.setText("" + parseLingo.getTableName());
             String calcT = "";
+            // 1车缝 2包装 3线外加工
+            // 4 成品: 1+2+3;
+            // 5 车缝成品: 1+3;
+            // 9 成品(不含线外加工)1+2;
+            // 10 车缝成品(不含线外加工）1;
+            // 11自定义: 1+2+3
             switch (parseLingo.getCalcType()) {
-                case "1":
+                case "4":
                     calcT = "成品";
                     break;
-                case "2":
+                case "5":
                     calcT = "车缝成品";
                     break;
-                case "3":
+                case "9":
+                    calcT = "成品(不含线外加工)";
+                    break;
+                case "10":
+                    calcT = "车缝成品(不含线外加工）";
+                    break;
+                case "11":
                     calcT = "自订";
                     break;
             }

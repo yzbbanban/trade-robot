@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yzb.lingo.controller.MainController">
     <children>
         <TabPane prefHeight="500.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
@@ -53,6 +53,8 @@
                                 <Label fx:id="lbBanbie" layoutX="343.0" layoutY="51.0" text="-"/>
                                 <Label layoutX="466.0" layoutY="18.0" text="用户:"/>
                                 <Label fx:id="userName" layoutX="509.0" layoutY="18.0" text="--"/>
+                                <Label fx:id="lRemark" layoutX="184.0" layoutY="83.0" text="备注" disable="true"/>
+                                <TextField fx:id="tfRemark" layoutX="227.0" layoutY="78.0" disable="true"/>
 
                             </children>
                         </AnchorPane>
