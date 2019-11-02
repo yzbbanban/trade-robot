@@ -416,6 +416,15 @@ public class MainController {
             }
             calcType.setText(calcT + "(成品/车缝成品/自订)");
 
+            //根据工序排序
+            Collections.sort(parseLingo.getAssign(), new Comparator<ParseLingo.AssignBean>() {
+                @Override
+                public int compare(ParseLingo.AssignBean o1, ParseLingo.AssignBean o2) {
+                    o1.getProduce().split("-");
+                    return 0;
+                }
+            });
+
             ObservableList<ParseLingo.AssignBean> list = FXCollections.observableArrayList(parseLingo.getAssign());
 
             produce.setCellValueFactory(new PropertyValueFactory("produce"));
@@ -490,7 +499,7 @@ public class MainController {
         List<MainProduct> mps = mpList.getData();
         cbLineNameList.getItems().clear();
         mps.forEach(mainProduct -> {
-            cbLineNameList.getItems().addAll(mainProduct.getName());
+            cbLineNameList.getItems().addAll(mainProduct.getName() + "(" + mainProduct.getBanbie() + ")");
         });
 
         cbType.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
@@ -501,6 +510,7 @@ public class MainController {
                     //加载数据
                     int id = in.getId();
                     String edition = in.getBanbie();
+                    lbBanbie.setText(edition);
                     setProList(id, edition);
                 }
 

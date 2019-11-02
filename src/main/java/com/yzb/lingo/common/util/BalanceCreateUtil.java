@@ -169,7 +169,7 @@ public class BalanceCreateUtil {
                 }
                 if (bi.equals(pj.getBj())) {
                     fBiIn = "" + 0;
-                    pi.setBiOut(fBiIn);
+                    pi.setBiIn(fBiIn);
                 }
 
                 if (bi.equals(pj.getAi())) {

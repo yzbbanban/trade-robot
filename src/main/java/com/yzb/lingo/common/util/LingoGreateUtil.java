@@ -169,12 +169,12 @@ public class LingoGreateUtil {
         lingoRow = lingoRow + 1;
 
 
-        for (int i = 0; i < typeA - 1; i++) {
+        for (int i = 0; i < typeA; i++) {
 
             bi = "b" + (i + 1);
             stringX = new StringBuilder();
 
-            for (int j = 0; j < typeA + typeB; j++) {
+            for (int j = 0; j <= typeA + typeB; j++) {
                 Production pro = productionList.get(j);
                 if (pro.getBj().equals(bi)) {
                     aibj = pro.getAi() + pro.getBj();
@@ -186,7 +186,7 @@ public class LingoGreateUtil {
 
             stringX.append("=");
 
-            for (int j = 0; j < typeA + typeB; j++) {
+            for (int j = 0; j <= typeA + typeB; j++) {
                 Production pro = productionList.get(j);
                 if (pro.getAi().equals(bi)) {
                     aibj = pro.getAi() + pro.getBj();
@@ -205,7 +205,7 @@ public class LingoGreateUtil {
         lingoRow = lingoRow + 1;
         stringX = new StringBuilder();
 
-        for (int i = 0; i < typeB - 1; i++) {
+        for (int i = 0; i < typeB; i++) {
             int index = typeA + i;
             Production pro = productionList.get(index);
             aibj = pro.getAi() + pro.getBj();
