@@ -20,6 +20,8 @@ public class ParseLingo {
      */
 
     private String tableName;
+    private String nameId;
+    private String adminId;
     private String calcType;
     private int procedure;
     private int peoCount;
@@ -30,6 +32,22 @@ public class ParseLingo {
     private String totalGoods;
     private String toActualGoods;
     private List<AssignBean> assign;
+
+    public String getNameId() {
+        return nameId;
+    }
+
+    public void setNameId(String nameId) {
+        this.nameId = nameId;
+    }
+
+    public String getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(String adminId) {
+        this.adminId = adminId;
+    }
 
     public String getTableName() {
         return tableName;

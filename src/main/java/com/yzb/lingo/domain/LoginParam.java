@@ -14,11 +14,20 @@ public class LoginParam {
      * title :
      */
 
+    private Integer id;
     private String username;
     private String nickname;
     private String code;
     private String department;
     private String title;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -63,7 +72,8 @@ public class LoginParam {
     @Override
     public String toString() {
         return "LoginParam{" +
-                "username='" + username + '\'' +
+                "id=" + id +
+                ", username='" + username + '\'' +
                 ", nickname='" + nickname + '\'' +
                 ", code='" + code + '\'' +
                 ", department='" + department + '\'' +

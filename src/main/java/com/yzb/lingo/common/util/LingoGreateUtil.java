@@ -83,13 +83,13 @@ public class LingoGreateUtil {
 
         stringX.append("!基本條件;\n");
         lingoRow = lingoRow + 1;
-        stringX.append("fsa1=1;");
+        stringX.append("fsa1=1;\n");
         lingoRow = lingoRow + 1;
-        stringX.append("fb" + typeA + "t=1;");
+        stringX.append("fb" + typeA + "t=1;\n");
         lingoRow = lingoRow + 1;
-        stringX.append("mp=" + mp + ";");
+        stringX.append("mp=" + mp + ";\n");
         lingoRow = lingoRow + 1;
-        stringX.append("messs=10000;\n");
+        stringX.append("messs=100000;\n");
         lingoRow = lingoRow + 1;
 
         //建立paibj
@@ -237,7 +237,7 @@ public class LingoGreateUtil {
 
         lingoRow = lingoRow + 1;
 
-        for (int i = 0; i < typeB - 1; i++) {
+        for (int i = 0; i < typeB; i++) {
 
             stringX = new StringBuilder();
             Production pro = productionList.get(i + typeA);

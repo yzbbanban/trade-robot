@@ -65,6 +65,8 @@ public class MainController {
     private Label userName;
     @FXML
     private Label lRemark;
+    @FXML
+    private Label lbEd;
 
 
     @FXML
@@ -143,6 +145,9 @@ public class MainController {
     @FXML
     protected void btnUploadMessage_OnClick_Event() throws Exception {
 
+        Gson gson = new Gson();
+        System.out.println("====>" + gson.toJson(parseLingo));
+
 
     }
 
@@ -206,18 +211,27 @@ public class MainController {
             Map<String, String> ct = new HashMap<>();
             Map<String, String> ca = new HashMap<>();
 
-            //循环第一次
+            // 循环第一次
             jsonStr.forEach(json -> {
                 if (json.contains("Title")) {
                     String[] res = json.split("_");
                     int len = res.length;
                     StringBuilder name = new StringBuilder();
-                    for (int i = 0; i < len - 3; i++) {
+                    for (int i = 0; i < len - 4; i++) {
                         name.append(res[i]);
                     }
-                    parseLingo.setTableName(name.toString());
-                    parseLingo.setCalcType(res[len - 2]);
-                    parseLingo.setBanbie(res[len - 1]);
+                    //名
+                    parseLingo.setTableName(name.toString()
+                            .replaceAll("：", "").replaceAll(":", "")
+                            .replaceAll("Model Title", "").trim());
+                    //name
+                    parseLingo.setNameId(res[len - 4].replace("n", ""));
+                    //type
+                    parseLingo.setCalcType(res[len - 3].replace("t", ""));
+                    //edition
+                    parseLingo.setBanbie(res[len - 2].replace("e", ""));
+                    //用户 id
+                    parseLingo.setAdminId(res[len - 1].replace("u", ""));
                 }
                 //找到总人数
                 if (json.contains("MP")) {
@@ -249,6 +263,7 @@ public class MainController {
                 }
 
             });
+            lbEd.setText("版本:" + parseLingo.getBanbie());
             int pC = parseLingo.getPeoCount();
             //循环第二次
             if (patterns.size() > 0) {
@@ -414,14 +429,26 @@ public class MainController {
                     calcT = "自订";
                     break;
             }
-            calcType.setText(calcT + "(成品/车缝成品/自订)");
+            calcType.setText(calcT);
 
             //根据工序排序
             Collections.sort(parseLingo.getAssign(), new Comparator<ParseLingo.AssignBean>() {
                 @Override
                 public int compare(ParseLingo.AssignBean o1, ParseLingo.AssignBean o2) {
-                    o1.getProduce().split("-");
-                    return 0;
+                    String[] ab1 = o1.getProduce().split("-");
+                    Integer a1 = Integer.parseInt(ab1[0]);
+
+                    String[] ab2 = o2.getProduce().split("-");
+
+                    Integer a2 = Integer.parseInt(ab2[0]);
+                    if (a1 == a2) {
+                        return 0;
+                    }
+
+                    if (a1 > a2) {
+                        return 1;
+                    }
+                    return -1;
                 }
             });
 
@@ -437,8 +464,32 @@ public class MainController {
             tView.setItems(list);
 
 
-            //上传数据
+            //获取选取的结果：版本、名、类型
+            //请求数据
+            typeId = Integer.parseInt(parseLingo.getCalcType());
+            setProList(Integer.parseInt(parseLingo.getNameId()), parseLingo.getBanbie());
+            // 拼接序号
+            System.out.println(productionList);
+            for (int i = 0, len = parseLingo.getAssign().size(); i < len; i++) {
+                //重新赋值
+                ParseLingo.AssignBean ass = parseLingo.getAssign().get(i);
+                System.out.println("xxxxx1----> " + ass.getProduce());
+                String[] asarr = ass.getProduce().split("-");
+                int startIndex = Integer.parseInt(asarr[0]);
+                int endIndex = Integer.parseInt(asarr[1]);
+                StringBuilder sb = new StringBuilder();
 
+                for (int j = startIndex - 1; j < endIndex; j++) {
+                    sb.append(productionList.get(j).getXuhao() + ",");
+                }
+                String res = sb.toString().substring(0, sb.toString().length() - 1);
+                ass.setProduce(res);
+                System.out.println("xxxxx2----> " + ass.getProduce());
+            }
+
+            produce.setCellValueFactory(new PropertyValueFactory("produce"));
+
+            System.out.println("==parseLingo====>" + gson.toJson(parseLingo));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -628,7 +679,7 @@ public class MainController {
             return;
         }
 
-        line.setLineName(productName + "_" + typeId + "_" + banbie);
+        line.setLineName(productName + "_t" + typeId + "_e" + banbie + "_u" + GlobleParam.loginParam.getId());
         List<Production> productions = new ArrayList<>();
         if (typeId == 3) {
             for (Production o : list) {

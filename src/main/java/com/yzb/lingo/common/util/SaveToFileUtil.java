@@ -1,6 +1,7 @@
 package com.yzb.lingo.common.util;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -56,7 +57,7 @@ public class SaveToFileUtil {
         BufferedWriter out = null;
         try {
             os = new FileOutputStream(summarizeFile, false);
-            out = new BufferedWriter(new OutputStreamWriter(os));
+            out = new BufferedWriter(new OutputStreamWriter(os, Charset.forName("UTF-8")));
             out.write(message);
         } catch (IOException e) {
             e.printStackTrace();
