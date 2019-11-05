@@ -147,6 +147,33 @@ public class MainController {
 
         Gson gson = new Gson();
         System.out.println("====>" + gson.toJson(parseLingo));
+        FaProductLingoDTO dto = new FaProductLingoDTO();
+        List<FaProductLingo> lingoList = new ArrayList<>(parseLingo.getAssign().size());
+        dto.setFaProductLingo(lingoList);
+        FaProductLingoCalc faCalc = new FaProductLingoCalc();
+
+        faCalc.setXuph(new BigDecimal("1"));
+        faCalc.setXuphs(new BigDecimal("1"));
+        faCalc.setProduction(new BigDecimal(parseLingo.getTotalGoods()));
+        faCalc.setIepoh(new BigDecimal(parseLingo.getPoh().trim()));
+        faCalc.setIepohs(new BigDecimal(parseLingo.getActualPoh().trim()));
+        faCalc.setAvaila(new BigDecimal("10"));
+        faCalc.setEdition(Integer.parseInt(parseLingo.getBanbie().trim()));
+        faCalc.setTotalallowance("10");
+        faCalc.setTotalstdct("");
+        faCalc.setName(parseLingo.getTableName());
+        faCalc.setNameId(Integer.parseInt(parseLingo.getNameId().trim()));
+        faCalc.setAdminId(Integer.parseInt(parseLingo.getAdminId()));
+
+        faCalc.setCustomizeName(parseLingo.getCustomizeName());
+        faCalc.setProtype(parseLingo.getCalcType());
+        faCalc.setTotalpeo("" + parseLingo.getPeoCount());
+        faCalc.setCreateTime(System.currentTimeMillis() / 1000);
+
+
+        dto.setFaProductLingoCalc(faCalc);
+
+        OkHttpUtils.postRequest(UrlConstant.UPLOAD_PRODUCT_API, new HashMap<>(2), null);
 
 
     }
@@ -224,6 +251,8 @@ public class MainController {
                     parseLingo.setTableName(name.toString()
                             .replaceAll("：", "").replaceAll(":", "")
                             .replaceAll("Model Title", "").trim());
+                    //备注
+                    parseLingo.setCustomizeName(res[len - 5].replace("r", ""));
                     //name
                     parseLingo.setNameId(res[len - 4].replace("n", ""));
                     //type
@@ -679,9 +708,13 @@ public class MainController {
             return;
         }
 
-        line.setLineName(productName + "_t" + typeId + "_e" + banbie + "_u" + GlobleParam.loginParam.getId());
+        String remark = lRemark.getText();
+        if (typeId != 11) {
+            remark = "";
+        }
+        line.setLineName(productName + "_r" + remark + "_t" + typeId + "_e" + banbie + "_u" + GlobleParam.loginParam.getId());
         List<Production> productions = new ArrayList<>();
-        if (typeId == 3) {
+        if (typeId == 11) {
             for (Production o : list) {
                 if (o.myCheckbox.isSelected()) {
                     productions.add(o);

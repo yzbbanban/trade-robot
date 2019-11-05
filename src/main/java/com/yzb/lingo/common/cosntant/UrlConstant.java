@@ -21,4 +21,14 @@ public class UrlConstant {
      */
     public static final String M_PRODUCT_API = "http://118.31.54.117:7777/api/index/mproduct";
 
+    /**
+     * 上传接口
+     */
+    private static final String BASE_URL = "http://192.168.1.117:9089/v1/";
+
+    /**
+     * 上传数据
+     */
+    public static final String UPLOAD_PRODUCT_API = BASE_URL + "faProductLingo/save";
+
 }

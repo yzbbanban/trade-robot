@@ -31,7 +31,16 @@ public class ParseLingo {
     private String toLoadRate;
     private String totalGoods;
     private String toActualGoods;
+    private String customizeName;
     private List<AssignBean> assign;
+
+    public String getCustomizeName() {
+        return customizeName;
+    }
+
+    public void setCustomizeName(String customizeName) {
+        this.customizeName = customizeName;
+    }
 
     public String getNameId() {
         return nameId;
@@ -141,6 +150,8 @@ public class ParseLingo {
     public String toString() {
         return "ParseLingo{" +
                 "tableName='" + tableName + '\'' +
+                ", nameId='" + nameId + '\'' +
+                ", adminId='" + adminId + '\'' +
                 ", calcType='" + calcType + '\'' +
                 ", procedure=" + procedure +
                 ", peoCount=" + peoCount +
@@ -150,6 +161,7 @@ public class ParseLingo {
                 ", toLoadRate='" + toLoadRate + '\'' +
                 ", totalGoods='" + totalGoods + '\'' +
                 ", toActualGoods='" + toActualGoods + '\'' +
+                ", customizeName='" + customizeName + '\'' +
                 ", assign=" + assign +
                 '}';
     }

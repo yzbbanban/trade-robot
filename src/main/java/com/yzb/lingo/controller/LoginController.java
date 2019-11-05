@@ -65,7 +65,7 @@ public class LoginController {
             }.getType());
 
             if (baseResultJson == null) {
-
+                MessageBox.warn("系统提示", "用户名或密码错误！");
             }
             if (baseResultJson.getCode() == 1) {
 
