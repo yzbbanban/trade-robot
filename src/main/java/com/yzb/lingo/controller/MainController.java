@@ -152,8 +152,10 @@ public class MainController {
         dto.setFaProductLingo(lingoList);
         FaProductLingoCalc faCalc = new FaProductLingoCalc();
 
-        faCalc.setXuph(new BigDecimal("1"));
-        faCalc.setXuphs(new BigDecimal("1"));
+        String production = parseLingo.getTotalGoods();
+        BigDecimal xups = new BigDecimal(production).divide(BigDecimal.TEN);
+        faCalc.setXuph(xups.add(xups.multiply(new BigDecimal("0.1"))));
+        faCalc.setXuphs(xups);
         faCalc.setProduction(new BigDecimal(parseLingo.getTotalGoods()));
         faCalc.setIepoh(new BigDecimal(parseLingo.getPoh().trim()));
         faCalc.setIepohs(new BigDecimal(parseLingo.getActualPoh().trim()));
