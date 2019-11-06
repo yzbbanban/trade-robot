@@ -207,9 +207,16 @@ public class MainController {
 
         dto.setFaProductLingoCalc(faCalc);
 
-        OkHttpUtils.postRequest(UrlConstant.UPLOAD_PRODUCT_API, new HashMap<>(2), null);
+        Map<String, String> map = new HashMap<>();
+        map.put("dto", new Gson().toJson(dto));
+        String res = OkHttpUtils.postRequest(UrlConstant.UPLOAD_PRODUCT_API, map, null);
+        System.out.println(res);
 
-
+        if (res.contains("SUCCESS")) {
+            MessageBox.error("系统提示", "上传成功");
+        } else {
+            MessageBox.error("系统提示", "上传失败请重试：" + res);
+        }
     }
 
     @FXML
