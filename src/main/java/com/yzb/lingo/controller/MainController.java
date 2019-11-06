@@ -716,8 +716,8 @@ public class MainController {
 
         ObservableList<Production> strList = FXCollections.observableArrayList(productionList);
         tVData.setItems(strList);
-
-        if (typeId == 3) {
+        //自定义
+        if (typeId == 11) {
             check.setCellValueFactory(cellData -> cellData.getValue().myCheckbox.getCheckBox());
         } else {
             check.setCellValueFactory(null);
