@@ -148,8 +148,40 @@ public class MainController {
         Gson gson = new Gson();
         System.out.println("====>" + gson.toJson(parseLingo));
         FaProductLingoDTO dto = new FaProductLingoDTO();
-        List<FaProductLingo> lingoList = new ArrayList<>(parseLingo.getAssign().size());
-        dto.setFaProductLingo(lingoList);
+        List<ParseLingo.AssignBean> lingoList = parseLingo.getAssign();
+        List<FaProductLingo> faProductLingoList = new ArrayList<>(lingoList.size());
+        String edition = parseLingo.getBanbie().trim();
+        String name = parseLingo.getTableName();
+        Integer nameId = Integer.parseInt(parseLingo.getNameId().trim());
+        String calcType = parseLingo.getCalcType().trim();
+        Integer totalCount = parseLingo.getPeoCount();
+        for (int i = 0, len = lingoList.size(); i < len; i++) {
+            ParseLingo.AssignBean assignBean = lingoList.get(i);
+            FaProductLingo faProductLingo = new FaProductLingo();
+            faProductLingo.setEdition(edition);
+            //数据库处理
+            faProductLingo.setCalcId(0);
+            faProductLingo.setName(name);
+            faProductLingo.setNameId(nameId);
+            String ct = assignBean.getCycleTime();
+            faProductLingo.setPurect(ct);
+            faProductLingo.setProtype(Integer.parseInt(calcType));
+            faProductLingo.setAllowance("10");
+            faProductLingo.setStdct(new BigDecimal(ct)
+                    .add(new BigDecimal(ct)
+                            .multiply(BigDecimal.TEN))
+                    .stripTrailingZeros()
+                    .toPlainString());
+            faProductLingo.setProduction(assignBean.getGoods());
+            faProductLingo.setLoad(assignBean.getLoadRate());
+            faProductLingo.setXuhaolist(assignBean.getProduce());
+            faProductLingo.setUsercount(assignBean.getPeoCount());
+            faProductLingo.setPeocount(totalCount);
+
+        }
+
+        dto.setFaProductLingo(faProductLingoList);
+
         FaProductLingoCalc faCalc = new FaProductLingoCalc();
 
         String production = parseLingo.getTotalGoods();
@@ -160,16 +192,16 @@ public class MainController {
         faCalc.setIepoh(new BigDecimal(parseLingo.getPoh().trim()));
         faCalc.setIepohs(new BigDecimal(parseLingo.getActualPoh().trim()));
         faCalc.setAvaila(new BigDecimal("10"));
-        faCalc.setEdition(Integer.parseInt(parseLingo.getBanbie().trim()));
+        faCalc.setEdition(Integer.parseInt(edition));
         faCalc.setTotalallowance("10");
         faCalc.setTotalstdct("");
-        faCalc.setName(parseLingo.getTableName());
-        faCalc.setNameId(Integer.parseInt(parseLingo.getNameId().trim()));
+        faCalc.setName(name);
+        faCalc.setNameId(nameId);
         faCalc.setAdminId(Integer.parseInt(parseLingo.getAdminId()));
 
         faCalc.setCustomizeName(parseLingo.getCustomizeName());
         faCalc.setProtype(parseLingo.getCalcType());
-        faCalc.setTotalpeo("" + parseLingo.getPeoCount());
+        faCalc.setTotalpeo("" + totalCount);
         faCalc.setCreateTime(System.currentTimeMillis() / 1000);
 
 
