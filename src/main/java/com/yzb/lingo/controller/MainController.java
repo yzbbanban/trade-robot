@@ -200,6 +200,8 @@ public class MainController {
         faCalc.setProtype(parseLingo.getCalcType());
         faCalc.setTotalpeo("" + totalCount);
         faCalc.setCreateTime(System.currentTimeMillis() / 1000);
+        faCalc.setCustomizeName(parseLingo.getCustomizeName()
+                + "_" + System.currentTimeMillis() / 1000);
 
 
         Map<String, String> map = new HashMap<>(1);
@@ -749,7 +751,11 @@ public class MainController {
         if (typeId != 11) {
             remark = "";
         }
-        line.setLineName(productName + "_r" + remark + "_t" + typeId + "_e" + banbie + "_u" + GlobleParam.loginParam.getId());
+        line.setLineName(productName
+                + "_r" + remark
+                + "_t" + typeId
+                + "_e" + banbie
+                + "_u" + GlobleParam.loginParam.getId());
         List<Production> productions = new ArrayList<>();
         if (typeId == 11) {
             for (Production o : list) {
