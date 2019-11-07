@@ -200,8 +200,10 @@ public class MainController {
         faCalc.setProtype(parseLingo.getCalcType());
         faCalc.setTotalpeo("" + totalCount);
         faCalc.setCreateTime(System.currentTimeMillis() / 1000);
-        faCalc.setCustomizeName(parseLingo.getCustomizeName()
-                + "_" + System.currentTimeMillis() / 1000);
+        if ("11".equals(parseLingo.getCalcType())) {
+            faCalc.setCustomizeName(parseLingo.getCustomizeName()
+                    + "_" + System.currentTimeMillis() / 1000);
+        }
 
 
         Map<String, String> map = new HashMap<>(1);
