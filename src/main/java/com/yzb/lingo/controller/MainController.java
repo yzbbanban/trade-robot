@@ -147,7 +147,6 @@ public class MainController {
 
         Gson gson = new Gson();
         System.out.println("====>" + gson.toJson(parseLingo));
-        FaProductLingoDTO dto = new FaProductLingoDTO();
         List<ParseLingo.AssignBean> lingoList = parseLingo.getAssign();
         List<FaProductLingo> faProductLingoList = new ArrayList<>(lingoList.size());
         String edition = parseLingo.getBanbie().trim();
@@ -177,10 +176,8 @@ public class MainController {
             faProductLingo.setXuhaolist(assignBean.getProduce());
             faProductLingo.setUsercount(assignBean.getPeoCount());
             faProductLingo.setPeocount(totalCount);
-
+            faProductLingoList.add(faProductLingo);
         }
-
-        dto.setFaProductLingo(faProductLingoList);
 
         FaProductLingoCalc faCalc = new FaProductLingoCalc();
 
@@ -205,15 +202,14 @@ public class MainController {
         faCalc.setCreateTime(System.currentTimeMillis() / 1000);
 
 
-        dto.setFaProductLingoCalc(faCalc);
-
-        Map<String, String> map = new HashMap<>();
-        map.put("dto", new Gson().toJson(dto));
+        Map<String, String> map = new HashMap<>(1);
+        map.put("faCalcJson", gson.toJson(faCalc));
+        map.put("faLingoJson", gson.toJson(faProductLingoList));
         String res = OkHttpUtils.postRequest(UrlConstant.UPLOAD_PRODUCT_API, map, null);
         System.out.println(res);
 
         if (res.contains("SUCCESS")) {
-            MessageBox.error("系统提示", "上传成功");
+            MessageBox.info("系统提示", "上传成功");
         } else {
             MessageBox.error("系统提示", "上传失败请重试：" + res);
         }
