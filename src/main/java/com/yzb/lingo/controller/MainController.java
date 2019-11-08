@@ -718,9 +718,11 @@ public class MainController {
         tVData.setItems(strList);
         //自定义
         if (typeId == 11) {
+            tfRemark.setDisable(false);
             check.setCellValueFactory(cellData -> cellData.getValue().myCheckbox.getCheckBox());
         } else {
             check.setCellValueFactory(null);
+            tfRemark.setDisable(true);
         }
 
         index.setCellValueFactory(cellData -> new SimpleStringProperty("" + cellData.getValue().getXuhao()));
