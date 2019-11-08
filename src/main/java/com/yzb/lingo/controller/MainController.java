@@ -781,6 +781,7 @@ public class MainController {
         //生成文件
         SaveToFileUtil.outMessageToFile(re, path, line.getLineName());
 
+        MessageBox.info("系统提示", "生成成功");
     }
 
     @FXML
