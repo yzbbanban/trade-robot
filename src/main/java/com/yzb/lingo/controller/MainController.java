@@ -112,6 +112,7 @@ public class MainController {
 
     private Integer typeId = 4;
     private Integer productId = 1;
+    private Integer nameId = 1;
     private MainProduct in;
     private String productName;
     private String banbie;
@@ -511,14 +512,7 @@ public class MainController {
                     String[] ab2 = o2.getProduce().split("-");
 
                     Integer a2 = Integer.parseInt(ab2[0]);
-                    if (a1 == a2) {
-                        return 0;
-                    }
-
-                    if (a1 > a2) {
-                        return 1;
-                    }
-                    return -1;
+                    return a1.compareTo(a2);
                 }
             });
 
@@ -630,6 +624,7 @@ public class MainController {
                 if (in != null) {
                     //加载数据
                     int id = in.getId();
+                    nameId = id;
                     String edition = in.getBanbie();
                     lbBanbie.setText(edition);
                     setProList(id, edition);
@@ -652,6 +647,7 @@ public class MainController {
                 banbie = in.getBanbie();
                 productId = newValue.intValue() + 1;
                 int id = in.getId();
+                nameId = id;
                 String edition = in.getBanbie();
                 lbBanbie.setText(in.getBanbie());
                 //加载数据
@@ -757,6 +753,7 @@ public class MainController {
         }
         line.setLineName(productName
                 + "_r" + remark
+                + "_n" + nameId
                 + "_t" + typeId
                 + "_e" + banbie
                 + "_u" + GlobleParam.loginParam.getId());
