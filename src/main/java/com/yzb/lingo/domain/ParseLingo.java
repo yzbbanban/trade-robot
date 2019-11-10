@@ -181,6 +181,7 @@ public class ParseLingo {
         private String goods;
         private String loadRate;
         private String unit;
+        private String merhard;
 
         public String getProduce() {
             return produce;
@@ -230,6 +231,14 @@ public class ParseLingo {
             this.unit = unit;
         }
 
+        public String getMerhard() {
+            return merhard;
+        }
+
+        public void setMerhard(String merhard) {
+            this.merhard = merhard;
+        }
+
         @Override
         public String toString() {
             return "AssignBean{" +
@@ -239,6 +248,7 @@ public class ParseLingo {
                     ", goods='" + goods + '\'' +
                     ", loadRate='" + loadRate + '\'' +
                     ", unit='" + unit + '\'' +
+                    ", merhard='" + merhard + '\'' +
                     '}';
         }
     }

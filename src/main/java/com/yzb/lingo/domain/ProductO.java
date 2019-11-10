@@ -41,7 +41,7 @@ public class ProductO {
     private String allowance;
     private String stdct;
     private String group;
-    private int hard;
+    private String hard;
     private String level;
     private String memo;
     private String materiel;
@@ -146,11 +146,11 @@ public class ProductO {
         this.group = group;
     }
 
-    public int getHard() {
+    public String getHard() {
         return hard;
     }
 
-    public void setHard(int hard) {
+    public void setHard(String hard) {
         this.hard = hard;
     }
 

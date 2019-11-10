@@ -102,6 +102,11 @@ public class Production {
      */
     private String biOut;
 
+    /**
+     * 难度系数
+     */
+    private String hard;
+
     @Expose(serialize = false, deserialize = false)
     public transient MyCheckbox myCheckbox = new MyCheckbox();
 
@@ -283,6 +288,14 @@ public class Production {
         this.startProcessType = startProcessType;
     }
 
+    public String getHard() {
+        return hard;
+    }
+
+    public void setHard(String hard) {
+        this.hard = hard;
+    }
+
     @Override
     public String toString() {
         return "Production{" +
@@ -307,6 +320,7 @@ public class Production {
                 ", aiOut='" + aiOut + '\'' +
                 ", biIn='" + biIn + '\'' +
                 ", biOut='" + biOut + '\'' +
+                ", hard='" + hard + '\'' +
                 ", startProcessType='" + startProcessType + '\'' +
                 '}';
     }

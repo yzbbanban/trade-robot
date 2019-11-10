@@ -177,6 +177,8 @@ public class MainController {
             faProductLingo.setXuhaolist(assignBean.getProduce());
             faProductLingo.setUsercount(assignBean.getPeoCount());
             faProductLingo.setPeocount(totalCount);
+            faProductLingo.setMerhard(assignBean.getMerhard());
+            //add
             faProductLingoList.add(faProductLingo);
         }
 
@@ -542,11 +544,24 @@ public class MainController {
                 int startIndex = Integer.parseInt(asarr[0]);
                 int endIndex = Integer.parseInt(asarr[1]);
                 StringBuilder sb = new StringBuilder();
-
+                BigDecimal totalhard = BigDecimal.ZERO;
                 for (int j = startIndex - 1; j < endIndex; j++) {
-                    sb.append(productionList.get(j).getXuhao() + ",");
+                    Production prod = productionList.get(j);
+                    sb.append(prod.getXuhao() + ",");
+                    //计算难度系数：
+                    //(ct1 * 难度系数1 + ct2 * 难度系数2) / 合并 ct
+                    String hard = prod.getHard();
+                    totalhard.add(new BigDecimal(prod.getPurect()).multiply(new BigDecimal(hard)));
                 }
+                //  和 / 合并 ct
+                ass.setMerhard(totalhard.divide(
+                        new BigDecimal(
+                                ass.getCycleTime()), 8, BigDecimal.ROUND_HALF_UP)
+                        .stripTrailingZeros()
+                        .toPlainString());
                 String res = sb.toString().substring(0, sb.toString().length() - 1);
+
+
                 ass.setProduce(res);
                 System.out.println("xxxxx2----> " + ass.getProduce());
             }
