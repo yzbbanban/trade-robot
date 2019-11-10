@@ -11,8 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yzb.lingo.controller.MainController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.yzb.lingo.controller.MainController">
     <children>
         <TabPane prefHeight="500.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
@@ -20,41 +19,32 @@
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
-                                <TableView fx:id="tVData" layoutX="13.0" layoutY="111.0" prefHeight="313.0"
-                                           prefWidth="575.0">
+                                <TableView fx:id="tVData" layoutX="13.0" layoutY="111.0" prefHeight="313.0" prefWidth="575.0">
                                     <columns>
-                                        <TableColumn fx:id="check" prefWidth="40.0" text="勾选"/>
-                                        <TableColumn fx:id="index" prefWidth="75.0" text="序号"/>
-                                        <TableColumn fx:id="flowName" prefWidth="200.0" text="流程名称"/>
-                                        <TableColumn fx:id="cTime" prefWidth="75.0" text="CT(秒)"/>
-                                        <TableColumn fx:id="techNeed" prefWidth="100.0" text="技能需求"/>
+                                        <TableColumn fx:id="check" prefWidth="40.0" text="勾选" />
+                                        <TableColumn fx:id="index" prefWidth="75.0" text="序号" />
+                                        <TableColumn fx:id="flowName" prefWidth="200.0" text="流程名称" />
+                                        <TableColumn fx:id="cTime" prefWidth="75.0" text="CT(秒)" />
+                                        <TableColumn fx:id="techNeed" prefWidth="100.0" text="技能需求" />
                                     </columns>
                                 </TableView>
-                                <Label layoutX="14.0" layoutY="83.0" text="人数选择"/>
-                                <Label layoutX="14.0" layoutY="50.0" text="工序名称"/>
-                                <ChoiceBox fx:id="cbLineNameList" layoutX="73.0" layoutY="45.0" prefHeight="27.0"
-                                           prefWidth="228.0"/>
-                                <TextField fx:id="peoTotalCount" layoutX="73.0" layoutY="78.0" prefHeight="28.0"
-                                           prefWidth="70.0"/>
-                                <Button layoutX="481.0" layoutY="432.0" mnemonicParsing="false" onAction="#createLingo"
-                                        text="生成 lingo 算法"/>
-                                <Button layoutX="312.0" layoutY="432.0" mnemonicParsing="false" onAction="#chooseFile"
-                                        text="生成算法文件路径选择"/>
-                                <TextField fx:id="filePath" layoutX="67.0" layoutY="430.0" prefHeight="30.0"
-                                           prefWidth="233.0"/>
-                                <Button fx:id="initData" layoutX="13.0" layoutY="14.0" mnemonicParsing="false"
-                                        onAction="#btcInitData" text="数据初始化"/>
-                                <Button layoutX="18.0" layoutY="432.0" mnemonicParsing="false" onAction="#btcAllSelect"
-                                        text="全选"/>
-                                <ChoiceBox fx:id="cbType" layoutX="397.0" layoutY="46.0" prefHeight="27.0"
-                                           prefWidth="185.0"/>
-                                <Label layoutX="356.0" layoutY="51.0" text="类型"/>
-                                <Label layoutX="310.0" layoutY="51.0" text="版别:"/>
-                                <Label fx:id="lbBanbie" layoutX="343.0" layoutY="51.0" text="-"/>
-                                <Label layoutX="466.0" layoutY="18.0" text="用户:"/>
-                                <Label fx:id="userName" layoutX="509.0" layoutY="18.0" text="--"/>
-                                <Label fx:id="lRemark" disable="true" layoutX="184.0" layoutY="83.0" text="备注"/>
-                                <TextField fx:id="tfRemark" disable="true" layoutX="227.0" layoutY="78.0"/>
+                                <Label layoutX="14.0" layoutY="83.0" text="人数选择" />
+                                <Label layoutX="14.0" layoutY="50.0" text="工序名称" />
+                                <ChoiceBox fx:id="cbLineNameList" layoutX="73.0" layoutY="45.0" prefHeight="27.0" prefWidth="228.0" />
+                                <TextField fx:id="peoTotalCount" layoutX="73.0" layoutY="78.0" prefHeight="28.0" prefWidth="70.0" />
+                                <Button layoutX="481.0" layoutY="432.0" mnemonicParsing="false" onAction="#createLingo" text="生成 lingo 算法" />
+                                <Button layoutX="312.0" layoutY="432.0" mnemonicParsing="false" onAction="#chooseFile" text="生成算法文件路径选择" />
+                                <TextField fx:id="filePath" layoutX="67.0" layoutY="430.0" prefHeight="30.0" prefWidth="233.0" />
+                                <Button fx:id="initData" layoutX="13.0" layoutY="14.0" mnemonicParsing="false" onAction="#btcInitData" text="数据初始化" />
+                                <Button layoutX="18.0" layoutY="432.0" mnemonicParsing="false" onAction="#btcAllSelect" text="全选" />
+                                <ChoiceBox fx:id="cbType" layoutX="397.0" layoutY="46.0" prefHeight="27.0" prefWidth="185.0" />
+                                <Label layoutX="356.0" layoutY="51.0" text="类型" />
+                                <Label layoutX="310.0" layoutY="51.0" text="版别:" />
+                                <Label fx:id="lbBanbie" layoutX="343.0" layoutY="51.0" text="-" />
+                                <Label layoutX="466.0" layoutY="18.0" text="用户:" />
+                                <Label fx:id="userName" layoutX="509.0" layoutY="18.0" text="--" />
+                                <Label fx:id="lRemark" disable="true" layoutX="184.0" layoutY="83.0" text="备注" />
+                                <TextField fx:id="tfRemark" disable="true" layoutX="227.0" layoutY="78.0" />
 
                             </children>
                         </AnchorPane>
@@ -64,51 +54,47 @@
                     <content>
                         <AnchorPane prefHeight="350.0" prefWidth="608.0">
                             <children>
-                                <Label layoutX="14.0" layoutY="5.0" text="工序表名称"/>
-                                <TextField fx:id="toTableName" disable="true" layoutX="130.0" layoutY="5.0"/>
-                                <Label fx:id="lbEd" layoutX="303.0" layoutY="10.0" text="版本:"/>
-                                <Label layoutX="350.0" layoutY="5.0" text="计算类型"/>
-                                <TextField fx:id="calcType" disable="true" layoutX="420.0" layoutY="5.0"/>
-                                <Label layoutX="14.0" layoutY="30.0" text="使用人力"/>
-                                <TextField fx:id="toPeoCount" disable="true" layoutX="130.0" layoutY="30.0"/>
-                                <Label layoutX="350.0" layoutY="30.0" text="工序数量"/>
-                                <TextField fx:id="toProcedure" disable="true" layoutX="420.0" layoutY="30.0"/>
-                                <Label layoutX="14.0" layoutY="55.0" text="人均负载率"/>
-                                <TextField fx:id="toLoadRate" disable="true" layoutX="130.0" layoutY="55.0"/>
-                                <Label layoutX="14.0" layoutY="80.0" text="放宽前产能(数量/h)"/>
-                                <TextField fx:id="toGoods" disable="true" layoutX="130.0" layoutY="80.0"/>
-                                <Label layoutX="350.0" layoutY="80.0" text="放宽前POH"/>
-                                <TextField fx:id="toPoh" disable="true" layoutX="420.0" layoutY="80.0"/>
+                                <Label layoutX="14.0" layoutY="5.0" text="工序表名称" />
+                                <TextField fx:id="toTableName" disable="true" layoutX="130.0" layoutY="5.0" />
+                                <Label fx:id="lbEd" layoutX="303.0" layoutY="10.0" text="版本:" />
+                                <Label layoutX="350.0" layoutY="5.0" text="计算类型" />
+                                <TextField fx:id="calcType" disable="true" layoutX="420.0" layoutY="5.0" />
+                                <Label layoutX="14.0" layoutY="30.0" text="使用人力" />
+                                <TextField fx:id="toPeoCount" disable="true" layoutX="130.0" layoutY="30.0" />
+                                <Label layoutX="350.0" layoutY="30.0" text="工序数量" />
+                                <TextField fx:id="toProcedure" disable="true" layoutX="420.0" layoutY="30.0" />
+                                <Label layoutX="14.0" layoutY="55.0" text="人均负载率" />
+                                <TextField fx:id="toLoadRate" disable="true" layoutX="130.0" layoutY="55.0" />
+                                <Label layoutX="14.0" layoutY="80.0" text="放宽前产能(数量/h)" />
+                                <TextField fx:id="toGoods" disable="true" layoutX="130.0" layoutY="80.0" />
+                                <Label layoutX="350.0" layoutY="80.0" text="放宽前POH" />
+                                <TextField fx:id="toPoh" disable="true" layoutX="420.0" layoutY="80.0" />
 
-                                <Label layoutX="14.0" layoutY="105.0" text="标准产能"/>
-                                <TextField fx:id="toActualGoods" disable="true" layoutX="130.0" layoutY="105.0"/>
-                                <Label layoutX="350.0" layoutY="105.0" text="标准POH"/>
-                                <TextField fx:id="toActualPoh" disable="true" layoutX="420.0" layoutY="105.0"/>
+                                <Label layoutX="14.0" layoutY="105.0" text="标准产能" />
+                                <TextField fx:id="toActualGoods" disable="true" layoutX="130.0" layoutY="105.0" />
+                                <Label layoutX="350.0" layoutY="105.0" text="标准POH" />
+                                <TextField fx:id="toActualPoh" disable="true" layoutX="420.0" layoutY="105.0" />
 
-                                <Label layoutX="14.0" layoutY="140.0" text="最佳解人力配置"/>
-                                <TableView fx:id="tView" layoutX="15.0" layoutY="166.0" prefHeight="257.0"
-                                           prefWidth="507.0">
+                                <Label layoutX="14.0" layoutY="140.0" text="最佳解人力配置" />
+                                <TableView fx:id="tView" layoutX="15.0" layoutY="166.0" prefHeight="257.0" prefWidth="574.0">
                                     <columns>
-                                        <TableColumn fx:id="produce" prefWidth="75.0" text="工序"/>
-                                        <TableColumn fx:id="peoCount" prefWidth="75.0" text="人数"/>
-                                        <TableColumn fx:id="cycleTime" prefWidth="75.0" text="CT(秒)"/>
-                                        <TableColumn fx:id="unit" prefWidth="75.0" text="配置产能"/>
-                                        <TableColumn fx:id="loadRate" prefWidth="75.0" text="负载率"/>
-                                        <TableColumn fx:id="goods" prefWidth="130.0" text="单人产能(数量/h)"/>
+                                        <TableColumn fx:id="produce" prefWidth="75.0" text="工序" />
+                                        <TableColumn fx:id="peoCount" prefWidth="75.0" text="人数" />
+                                        <TableColumn fx:id="cycleTime" prefWidth="75.0" text="CT(秒)" />
+                                        <TableColumn fx:id="unit" prefWidth="75.0" text="配置产能" />
+                                        <TableColumn fx:id="loadRate" prefWidth="75.0" text="负载率" />
+                                        <TableColumn fx:id="merhard" prefWidth="75.0" text="合并难度" />
+                                        <TableColumn fx:id="goods" prefWidth="130.0" text="单人产能(数量/h)" />
                                     </columns>
                                 </TableView>
-                                <Button layoutX="398.0" layoutY="429.0" onAction="#btnBeginAnalyse_OnClick_Event"
-                                        styleClass="fat-button" text="开始分析">
+                                <Button layoutX="398.0" layoutY="429.0" onAction="#btnBeginAnalyse_OnClick_Event" styleClass="fat-button" text="开始分析">
                                     <font>
-                                        <Font name="System Bold" size="14.0"/>
+                                        <Font name="System Bold" size="14.0" />
                                     </font>
                                 </Button>
-                                <TextField fx:id="txtResources" disable="true" layoutX="14.0" layoutY="431.0"
-                                           prefHeight="23.0" prefWidth="250.0"/>
-                                <Button layoutX="268.0" layoutY="431.0" onAction="#btnSelectPath_OnClick_Event"
-                                        styleClass="fat-button" text="选择文件"/>
-                                <Button layoutX="521.0" layoutY="431.0" mnemonicParsing="false"
-                                        onAction="#btnUploadMessage_OnClick_Event" text="上传结果"/>
+                                <TextField fx:id="txtResources" disable="true" layoutX="14.0" layoutY="431.0" prefHeight="23.0" prefWidth="250.0" />
+                                <Button layoutX="268.0" layoutY="431.0" onAction="#btnSelectPath_OnClick_Event" styleClass="fat-button" text="选择文件" />
+                                <Button layoutX="521.0" layoutY="431.0" mnemonicParsing="false" onAction="#btnUploadMessage_OnClick_Event" text="上传结果" />
 
                             </children>
                         </AnchorPane>

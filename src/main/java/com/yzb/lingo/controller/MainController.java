@@ -83,6 +83,8 @@ public class MainController {
     @FXML
     private TableColumn loadRate;
     @FXML
+    private TableColumn merhard;
+    @FXML
     private TableColumn unit;
 
     @FXML
@@ -567,6 +569,8 @@ public class MainController {
             }
 
             produce.setCellValueFactory(new PropertyValueFactory("produce"));
+            merhard.setCellValueFactory(new PropertyValueFactory("merhard"));
+
 
             System.out.println("==parseLingo====>" + gson.toJson(parseLingo));
 
