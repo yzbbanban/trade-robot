@@ -290,7 +290,7 @@ public class MainController {
                     String[] res = json.split("_");
                     int len = res.length;
                     StringBuilder name = new StringBuilder();
-                    for (int i = 0; i < len - 4; i++) {
+                    for (int i = 0; i < len - 5; i++) {
                         name.append(res[i]);
                     }
                     //名
@@ -553,7 +553,7 @@ public class MainController {
                     //计算难度系数：
                     //(ct1 * 难度系数1 + ct2 * 难度系数2) / 合并 ct
                     String hard = prod.getHard();
-                    totalhard.add(new BigDecimal(prod.getPurect()).multiply(new BigDecimal(hard)));
+                    totalhard = totalhard.add(new BigDecimal(prod.getPurect()).multiply(new BigDecimal(hard)));
                 }
                 //  和 / 合并 ct
                 ass.setMerhard(totalhard.divide(
