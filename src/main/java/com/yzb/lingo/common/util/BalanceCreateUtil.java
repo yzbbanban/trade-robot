@@ -101,7 +101,7 @@ public class BalanceCreateUtil {
                 }
 
                 //j类型不是手工，还有 spt 不是手工，则不可以可以合并
-                if (!productionJ.getGroup().equals("手工")
+                if (!"手工".equals(productionJ.getGroup())
                         && !productionJ.getGroup().equals(startProcessType)) {
                     exitIfFlag = 1;
                 }
@@ -115,7 +115,7 @@ public class BalanceCreateUtil {
                     pd.setBj("b" + (j + 1));
                     pd.setFlow("f" + pd.getAi() + pd.getBj());
                     pd.setPeoParam("w" + pd.getAi() + pd.getBj());
-                    pij = pij.add(new BigDecimal(productionJ.getPurect()))
+                    pij = pij.add(new BigDecimal(productionJ.getPurect().trim()))
                             .stripTrailingZeros();
                     pd.setPij("" + pij);
                     pd.setUph("" + new BigDecimal(3600)
