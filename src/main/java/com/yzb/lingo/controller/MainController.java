@@ -553,7 +553,7 @@ public class MainController {
                     //计算难度系数：
                     //(ct1 * 难度系数1 + ct2 * 难度系数2) / 合并 ct
                     String hard = prod.getHard();
-                    totalhard = totalhard.add(new BigDecimal(prod.getPurect()).multiply(new BigDecimal(hard)));
+                    totalhard = totalhard.add(new BigDecimal(prod.getPurect().trim()).multiply(new BigDecimal(hard.trim())));
                 }
                 //  和 / 合并 ct
                 ass.setMerhard(totalhard.divide(
