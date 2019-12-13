@@ -193,6 +193,9 @@ public class MainController {
         faCalc.setProduction(new BigDecimal(parseLingo.getTotalGoods()));
         faCalc.setIepoh(new BigDecimal(parseLingo.getPoh().trim()));
         faCalc.setIepohs(new BigDecimal(parseLingo.getActualPoh().trim()));
+        //   iepohs/(3600/sum(CT))
+//        BigDecimal ct=new BigDecimal("3600").divide(cTime);
+//        faCalc.getIepohs().divide()
         faCalc.setAvaila(new BigDecimal("10"));
         faCalc.setEdition(Integer.parseInt(edition));
         faCalc.setTotalallowance("10");
