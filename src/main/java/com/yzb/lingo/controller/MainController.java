@@ -119,7 +119,7 @@ public class MainController implements MessageBox.IConfirm {
     private String productName;
     private String banbie;
 
-    private int[] wtype = new int[]{4, 5, 9, 10, 6, 11};
+    private int[] wtype = new int[]{4, 5, 9, 10, 2, 11};
 
     /**
      * 显示消息按钮的单击事件 不用了
@@ -851,6 +851,7 @@ public class MainController implements MessageBox.IConfirm {
 
 
     private void setPackageInfo() {
+        typeId = 6;
         MessageBox.info("系统提示", "提升包装无需lingo計算，生成完之后可直接上传");
         Gson gson = new Gson();
         List<FaProductLingo> faProductLingoList = new ArrayList<>(20);
