@@ -119,7 +119,7 @@ public class MainController implements MessageBox.IConfirm {
     private String productName;
     private String banbie;
 
-    private int[] wtype = new int[]{4, 5, 9, 10, 2, 11};
+    private int[] wtype = new int[]{4, 5, 9, 10, 6, 11};
 
     /**
      * 显示消息按钮的单击事件 不用了
@@ -489,11 +489,12 @@ public class MainController implements MessageBox.IConfirm {
             // 1车缝 2包装 3线外加工
             // 4 成品: 1+2+3;
             // 5 车缝成品: 1+3;
+            // 6 包装
             // 9 成品(不含线外加工)1+2;
             // 10 车缝成品(不含线外加工）1;
             // 11自定义: 1+2+3
             switch (parseLingo.getCalcType()) {
-                case "2":
+                case "6":
                     calcT = "包装";
                     break;
                 case "4":
