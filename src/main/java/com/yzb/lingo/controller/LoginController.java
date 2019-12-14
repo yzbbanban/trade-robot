@@ -57,19 +57,19 @@ public class LoginController {
         String accountName = txtAccountName.getText();
         String password = txtPassword.getText();
 
-//        String loginResult = OkHttpUtils.getRequest(String.format(UrlConstant.LOGIN_API, accountName, password));
+        String loginResult = OkHttpUtils.getRequest(String.format(UrlConstant.LOGIN_API, accountName, password));
 
         Gson gson = new Gson();
         try {
-//            BaseResultJson<LoginParam> baseResultJson = gson.fromJson(loginResult, new TypeToken<BaseResultJson<LoginParam>>() {
-//            }.getType());
+            BaseResultJson<LoginParam> baseResultJson = gson.fromJson(loginResult, new TypeToken<BaseResultJson<LoginParam>>() {
+            }.getType());
 
-//            if (baseResultJson == null) {
-//                MessageBox.warn("系统提示", "用户名或密码错误！");
-//            }
-//            if (baseResultJson.getCode() == 1) {
+            if (baseResultJson == null) {
+                MessageBox.warn("系统提示", "用户名或密码错误！");
+            }
+            if (baseResultJson.getCode() == 1) {
 
-//                GlobleParam.loginParam = baseResultJson.getData();
+                GlobleParam.loginParam = baseResultJson.getData();
                 Parent root = FXMLLoader.load(getClass().getResource("/MainFrame.fxml"));
 
                 Stage stage = new Stage();
@@ -91,7 +91,7 @@ public class LoginController {
                 if (appStage != null) {
                     appStage.close();
                 }
-//            }
+            }
         } catch (Exception e) {
             MessageBox.warn("系统提示", "用户名或密码错误");
         }

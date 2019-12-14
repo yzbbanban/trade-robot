@@ -119,7 +119,7 @@ public class MainController implements MessageBox.IConfirm {
     private String productName;
     private String banbie;
 
-    private int[] wtype = new int[]{4, 5, 9, 10, 11};
+    private int[] wtype = new int[]{4, 5, 9, 10, 2, 11};
 
     /**
      * 显示消息按钮的单击事件 不用了
@@ -196,8 +196,8 @@ public class MainController implements MessageBox.IConfirm {
         faCalc.setIepoh(new BigDecimal(parseLingo.getPoh().trim()));
         faCalc.setIepohs(new BigDecimal(parseLingo.getActualPoh().trim()));
         //利用率   iepohs/(3600/sum(CT))
-        BigDecimal ct = new BigDecimal("3600").divide(sumCt, BigDecimal.ROUND_DOWN, 8);
-        BigDecimal availa = faCalc.getIepohs().divide(ct, BigDecimal.ROUND_DOWN, 8);
+        BigDecimal ct = new BigDecimal("3600").divide(sumCt, BigDecimal.ROUND_HALF_UP, 8);
+        BigDecimal availa = faCalc.getIepohs().divide(ct, BigDecimal.ROUND_HALF_UP, 8);
         faCalc.setAvaila(availa);
         faCalc.setEdition(Integer.parseInt(edition));
         faCalc.setTotalallowance("10");
@@ -493,6 +493,9 @@ public class MainController implements MessageBox.IConfirm {
             // 10 车缝成品(不含线外加工）1;
             // 11自定义: 1+2+3
             switch (parseLingo.getCalcType()) {
+                case "2":
+                    calcT = "包装";
+                    break;
                 case "4":
                     calcT = "成品";
                     break;
@@ -692,6 +695,10 @@ public class MainController implements MessageBox.IConfirm {
         //1车缝 2包装 3线外加工
         //4	成品	1,2,3
         //11	自訂義	1,2,3
+        if (typeId == 2) {
+            productionList = getProductResult(id, 2, edition);
+        }
+
         if (typeId == 4 || typeId == 11) {
             productionList = getProductResult(id, 1, edition);
             List<Production> l1 = getProductResult(id, 2, edition);
@@ -756,6 +763,10 @@ public class MainController implements MessageBox.IConfirm {
 
     @FXML
     public void createLingo() {
+        if (typeId == 2) {
+            setPackageInfo();
+            return;
+        }
         String peoCount = peoTotalCount.getText().trim().toString();
         if (StringUtils.isEmpty(peoCount)) {
             MessageBox.error("系统提示", "填写人数");
@@ -837,9 +848,100 @@ public class MainController implements MessageBox.IConfirm {
         }.getType());
     }
 
-    @Override
-    public void confirm(Map<String, String> map) {
+
+    private void setPackageInfo() {
+        MessageBox.info("系统提示", "提升包装无需lingo計算，生成完之后可直接上传");
         Gson gson = new Gson();
+        List<FaProductLingo> faProductLingoList = new ArrayList<>(20);
+        String calcType = "" + typeId;
+        String peoCount = peoTotalCount.getText().trim().toString();
+        if (StringUtils.isEmpty(peoCount)) {
+            MessageBox.error("系统提示", "填写人数");
+            return;
+        }
+
+        BigDecimal ctTotal = BigDecimal.ZERO;
+        StringBuilder xuhaoList = new StringBuilder();
+        BigDecimal hardTotal = BigDecimal.ZERO;
+        for (int i = 0; i < productionList.size(); i++) {
+            Production pro = productionList.get(i);
+            BigDecimal pureCt = new BigDecimal(pro.getPurect().trim());
+            ctTotal = ctTotal.add(pureCt);
+            xuhaoList.append(pro.getXuhao() + ",");
+            hardTotal = hardTotal.add(new BigDecimal(pro.getHard()).multiply(pureCt));
+        }
+        BigDecimal productTotal = new BigDecimal(peoCount)
+                .multiply(
+                        new BigDecimal("3600").divide(ctTotal, BigDecimal.ROUND_HALF_UP, 4));
+        Integer totalCount = Integer.parseInt(peoCount);
+        FaProductLingo faProductLingo = new FaProductLingo();
+        faProductLingo.setEdition(banbie);
+        //数据库处理
+        faProductLingo.setCalcId(0);
+        faProductLingo.setName(productName);
+        faProductLingo.setNameId(nameId);
+        faProductLingo.setPurect(ctTotal.stripTrailingZeros().toPlainString());
+        faProductLingo.setProtype(Integer.parseInt(calcType));
+        faProductLingo.setAllowance("10");
+        faProductLingo.setStdct(ctTotal
+                .add(ctTotal.multiply(BigDecimal.TEN))
+                .stripTrailingZeros()
+                .toPlainString());
+        faProductLingo.setProduction(productTotal.stripTrailingZeros().toPlainString());
+        //负载为 100%
+        faProductLingo.setLoad("1");
+        faProductLingo.setXuhaolist(xuhaoList.toString()
+                .substring(0, xuhaoList.toString().length() - 1));
+        faProductLingo.setUsercount(Integer.parseInt(peoCount));
+        faProductLingo.setPeocount(totalCount);
+        //(ct1 * 难度系数1 + ct2 * 难度系数2) / 合并 ct
+        faProductLingo.setMerhard(hardTotal.divide(ctTotal, BigDecimal.ROUND_HALF_UP, 4)
+                .stripTrailingZeros().toPlainString());
+        //add
+        faProductLingoList.add(faProductLingo);
+        //====================================
+
+        //================main================
+        FaProductLingoCalc faCalc = new FaProductLingoCalc();
+
+        BigDecimal xups = productTotal.divide(BigDecimal.TEN);
+        faCalc.setXuph(xups.add(xups.multiply(new BigDecimal("0.1"))));
+        faCalc.setXuphs(xups);
+        faCalc.setProduction(productTotal);
+        faCalc.setIepoh(productTotal.divide(new BigDecimal(totalCount), BigDecimal.ROUND_HALF_UP, 4));
+        BigDecimal actG = productTotal.divide(new BigDecimal("1.1"), 4, BigDecimal.ROUND_HALF_UP);
+        faCalc.setIepohs(actG.divide(new BigDecimal(totalCount), BigDecimal.ROUND_HALF_UP, 4));
+        //利用率   iepohs/(3600/sum(CT))
+        BigDecimal ct = new BigDecimal("3600").divide(ctTotal, BigDecimal.ROUND_HALF_UP, 4);
+        BigDecimal availa = faCalc.getIepohs().divide(ct, BigDecimal.ROUND_HALF_UP, 4);
+        faCalc.setAvaila(availa);
+        faCalc.setEdition(Integer.parseInt(banbie));
+        faCalc.setTotalallowance("10");
+        faCalc.setTotalstdct("");
+        faCalc.setName(productName);
+        faCalc.setNameId(nameId);
+        faCalc.setAdminId(GlobleParam.loginParam.getId());
+
+        faCalc.setCustomizeName("");
+        faCalc.setProtype(calcType);
+        faCalc.setTotalpeo("" + totalCount);
+        faCalc.setCreateTime(System.currentTimeMillis() / 1000);
+
+        Map<String, String> map = new HashMap<>(2);
+        map.put("faCalcJson", gson.toJson(faCalc));
+        map.put("faLingoJson", gson.toJson(faProductLingoList));
+        String res = OkHttpUtils.postRequest(UrlConstant.UPLOAD_PRODUCT_API, map, null);
+        System.out.println(res);
+
+        if (res.contains("SUCCESS")) {
+            MessageBox.info("系统提示", "上传成功");
+        } else if (res.contains("exist")) {
+            MessageBox.confirm("体统提示", "数据有重复，是否覆盖", this, map);
+        }
+    }
+
+    @Override
+    public void confirmInfo(Map<String, String> map) {
         String res = OkHttpUtils.postRequest(UrlConstant.UPLOAD_DELANDSAVE_PRODUCT_API, map, null);
         System.out.println(res);
         if (res.contains("SUCCESS")) {

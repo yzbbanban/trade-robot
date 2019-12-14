@@ -40,6 +40,9 @@ public class FaProductLingoCalc implements Serializable {
      * 利用率
      */
     private BigDecimal availa;
+    /**
+     * 版别
+     */
     private Integer edition;
     /**
      * 宽放率

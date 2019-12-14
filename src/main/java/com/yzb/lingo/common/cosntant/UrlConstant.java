@@ -6,8 +6,8 @@ package com.yzb.lingo.common.cosntant;
  */
 public class UrlConstant {
 
-    public static final String BASE_MC_URL = "http://192.168.35.201:7777/public/";
-//    public static final String BASE_MC_URL="http://118.31.54.117:7777/";
+//    public static final String BASE_MC_URL = "http://192.168.35.201:7777/public/";
+    public static final String BASE_MC_URL="http://118.31.54.117:7777/";
 
     /**
      * 获取工序api
@@ -27,7 +27,8 @@ public class UrlConstant {
     /**
      * 上传接口
      */
-    private static final String BASE_URL = "http://192.168.35.201:9089/v1/";
+//    private static final String BASE_URL = "http://192.168.35.201:9089/v1/";
+    private static final String BASE_URL = "http://127.0.0.1:9089/v1/";
 
     /**
      * 上传数据

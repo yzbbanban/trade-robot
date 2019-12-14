@@ -1,6 +1,7 @@
 package com.yzb.lingo.common.component;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 
 import java.util.Map;
@@ -11,7 +12,7 @@ public class MessageBox {
     private static IConfirm iConfirm;
 
     public static interface IConfirm {
-        void confirm(Map<String, String> map);
+        void confirmInfo(Map<String, String> map);
     }
 
     /**
@@ -66,7 +67,8 @@ public class MessageBox {
         alert.setTitle(title);
         alert.setHeaderText(headerText);
         alert.setContentText(msg);
-        alert.initOwner(null);
+        ButtonType buttonTypeOne = new ButtonType("确认");
+        alert.getButtonTypes().setAll(buttonTypeOne);
         return alert.showAndWait();
     }
 
@@ -75,15 +77,18 @@ public class MessageBox {
         alert.setTitle(title);
         alert.setHeaderText("确认提示");
         alert.setContentText(msg);
-        alert.initOwner(null);
+        ButtonType buttonTypeCancel = new ButtonType("取消", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType buttonTypeOne = new ButtonType("确认执行");
+        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.get() == buttonTypeOne) {
             // ... user chose OK
-            iConfirm.confirm(map);
+            iConfirm.confirmInfo(map);
         } else {
             // ... user chose CANCEL or closed the dialog
+            return result;
         }
-        return alert.showAndWait();
+        return result;
     }
 
 }
