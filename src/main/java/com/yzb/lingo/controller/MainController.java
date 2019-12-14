@@ -34,7 +34,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.*;
 
-public class MainController {
+public class MainController implements MessageBox.IConfirm {
     @FXML
     private TextField toTableName;
     @FXML
@@ -157,6 +157,7 @@ public class MainController {
         Integer nameId = Integer.parseInt(parseLingo.getNameId().trim());
         String calcType = parseLingo.getCalcType().trim();
         Integer totalCount = parseLingo.getPeoCount();
+        BigDecimal sumCt = BigDecimal.ZERO;
         for (int i = 0, len = lingoList.size(); i < len; i++) {
             ParseLingo.AssignBean assignBean = lingoList.get(i);
             FaProductLingo faProductLingo = new FaProductLingo();
@@ -182,6 +183,7 @@ public class MainController {
             faProductLingo.setMerhard(assignBean.getMerhard());
             //add
             faProductLingoList.add(faProductLingo);
+            sumCt = sumCt.add(new BigDecimal(faProductLingo.getStdct()));
         }
 
         FaProductLingoCalc faCalc = new FaProductLingoCalc();
@@ -193,10 +195,10 @@ public class MainController {
         faCalc.setProduction(new BigDecimal(parseLingo.getTotalGoods()));
         faCalc.setIepoh(new BigDecimal(parseLingo.getPoh().trim()));
         faCalc.setIepohs(new BigDecimal(parseLingo.getActualPoh().trim()));
-        //   iepohs/(3600/sum(CT))
-//        BigDecimal ct=new BigDecimal("3600").divide(cTime);
-//        faCalc.getIepohs().divide()
-        faCalc.setAvaila(new BigDecimal("10"));
+        //利用率   iepohs/(3600/sum(CT))
+        BigDecimal ct = new BigDecimal("3600").divide(sumCt, BigDecimal.ROUND_DOWN, 8);
+        BigDecimal availa = faCalc.getIepohs().divide(ct, BigDecimal.ROUND_DOWN, 8);
+        faCalc.setAvaila(availa);
         faCalc.setEdition(Integer.parseInt(edition));
         faCalc.setTotalallowance("10");
         faCalc.setTotalstdct("");
@@ -214,7 +216,7 @@ public class MainController {
         }
 
 
-        Map<String, String> map = new HashMap<>(1);
+        Map<String, String> map = new HashMap<>(2);
         map.put("faCalcJson", gson.toJson(faCalc));
         map.put("faLingoJson", gson.toJson(faProductLingoList));
         String res = OkHttpUtils.postRequest(UrlConstant.UPLOAD_PRODUCT_API, map, null);
@@ -222,8 +224,8 @@ public class MainController {
 
         if (res.contains("SUCCESS")) {
             MessageBox.info("系统提示", "上传成功");
-        } else {
-            MessageBox.error("系统提示", "上传失败请重试：" + res);
+        } else if (res.contains("exist")) {
+            MessageBox.confirm("体统提示", "数据有重复，是否覆盖", this, map);
         }
     }
 
@@ -624,6 +626,7 @@ public class MainController {
                 "车缝成品(车缝、包装)",
                 "成品(不含线外加工)",
                 "车缝成品(不含线外加工)",
+                "包装",
                 "自定义");
         cbType.getSelectionModel().selectFirst();
         //加载类型
@@ -834,4 +837,13 @@ public class MainController {
         }.getType());
     }
 
+    @Override
+    public void confirm(Map<String, String> map) {
+        Gson gson = new Gson();
+        String res = OkHttpUtils.postRequest(UrlConstant.UPLOAD_DELANDSAVE_PRODUCT_API, map, null);
+        System.out.println(res);
+        if (res.contains("SUCCESS")) {
+            MessageBox.info("系统提示", "上传成功");
+        }
+    }
 }

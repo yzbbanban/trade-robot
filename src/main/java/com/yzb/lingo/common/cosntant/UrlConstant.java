@@ -33,5 +33,6 @@ public class UrlConstant {
      * 上传数据
      */
     public static final String UPLOAD_PRODUCT_API = BASE_URL + "faProductLingo/save";
+    public static final String UPLOAD_DELANDSAVE_PRODUCT_API = BASE_URL + "faProductLingo/delAndSave";
 
 }
