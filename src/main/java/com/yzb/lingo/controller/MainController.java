@@ -196,8 +196,8 @@ public class MainController implements MessageBox.IConfirm {
         faCalc.setIepoh(new BigDecimal(parseLingo.getPoh().trim()));
         faCalc.setIepohs(new BigDecimal(parseLingo.getActualPoh().trim()));
         //利用率   iepohs/(3600/sum(CT))
-        BigDecimal ct = new BigDecimal("3600").divide(sumCt, BigDecimal.ROUND_HALF_UP, 8);
-        BigDecimal availa = faCalc.getIepohs().divide(ct, BigDecimal.ROUND_HALF_UP, 8);
+        BigDecimal ct = new BigDecimal("3600").divide(sumCt, BigDecimal.ROUND_HALF_UP, 4);
+        BigDecimal availa = faCalc.getIepohs().divide(ct, BigDecimal.ROUND_HALF_UP, 4);
         faCalc.setAvaila(availa);
         faCalc.setEdition(Integer.parseInt(edition));
         faCalc.setTotalallowance("10");
@@ -225,7 +225,7 @@ public class MainController implements MessageBox.IConfirm {
         if (res.contains("SUCCESS")) {
             MessageBox.info("系统提示", "上传成功");
         } else if (res.contains("exist")) {
-            MessageBox.confirm("体统提示", "数据有重复，是否覆盖", this, map);
+            MessageBox.confirm("系统提示", "数据有重复，是否覆盖", this, map);
         }
     }
 
@@ -567,7 +567,7 @@ public class MainController implements MessageBox.IConfirm {
                 //  和 / 合并 ct
                 ass.setMerhard(totalhard.divide(
                         new BigDecimal(
-                                ass.getCycleTime()), 8, BigDecimal.ROUND_HALF_UP)
+                                ass.getCycleTime()), 4, BigDecimal.ROUND_HALF_UP)
                         .stripTrailingZeros()
                         .toPlainString());
                 String res = sb.toString().substring(0, sb.toString().length() - 1);
@@ -938,7 +938,7 @@ public class MainController implements MessageBox.IConfirm {
         if (res.contains("SUCCESS")) {
             MessageBox.info("系统提示", "上传成功");
         } else if (res.contains("exist")) {
-            MessageBox.confirm("体统提示", "数据有重复，是否覆盖", this, map);
+            MessageBox.confirm("系统提示", "数据有重复，是否覆盖", this, map);
         }
     }
 
