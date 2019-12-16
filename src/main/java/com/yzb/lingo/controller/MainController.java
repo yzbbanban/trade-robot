@@ -858,6 +858,7 @@ public class MainController implements MessageBox.IConfirm {
         String calcType = "" + typeId;
         String peoCount = peoTotalCount.getText().trim().toString();
         if (StringUtils.isEmpty(peoCount)) {
+            typeId = 2;
             MessageBox.error("系统提示", "填写人数");
             return;
         }
@@ -914,7 +915,8 @@ public class MainController implements MessageBox.IConfirm {
         BigDecimal actG = productTotal.divide(new BigDecimal("1.1"), 4, BigDecimal.ROUND_HALF_UP);
         faCalc.setIepohs(actG.divide(new BigDecimal(totalCount), BigDecimal.ROUND_HALF_UP, 4));
         //利用率   iepohs/(3600/sum(CT))
-        BigDecimal ct = new BigDecimal("3600").divide(ctTotal, BigDecimal.ROUND_HALF_UP, 4);
+        BigDecimal ct = new BigDecimal("3600").divide(new BigDecimal(faProductLingo.getStdct()),
+                BigDecimal.ROUND_HALF_UP, 4);
         BigDecimal availa = faCalc.getIepohs().divide(ct, BigDecimal.ROUND_HALF_UP, 4);
         faCalc.setAvaila(availa);
         faCalc.setEdition(Integer.parseInt(banbie));
@@ -940,6 +942,7 @@ public class MainController implements MessageBox.IConfirm {
         } else if (res.contains("exist")) {
             MessageBox.confirm("系统提示", "数据有重复，是否覆盖", this, map);
         }
+        typeId = 2;
     }
 
     @Override
