@@ -172,7 +172,7 @@ public class MainController implements MessageBox.IConfirm {
             faProductLingo.setAllowance("10");
             faProductLingo.setStdct(new BigDecimal(ct)
                     .add(new BigDecimal(ct)
-                            .multiply(BigDecimal.TEN))
+                            .multiply(new BigDecimal("0.1")))
                     .stripTrailingZeros()
                     .toPlainString());
             faProductLingo.setProduction(assignBean.getGoods());
@@ -886,7 +886,7 @@ public class MainController implements MessageBox.IConfirm {
         faProductLingo.setProtype(Integer.parseInt(calcType));
         faProductLingo.setAllowance("10");
         faProductLingo.setStdct(ctTotal
-                .add(ctTotal.multiply(BigDecimal.TEN))
+                .add(ctTotal.multiply(new BigDecimal("0.1")))
                 .stripTrailingZeros()
                 .toPlainString());
         faProductLingo.setProduction(productTotal.stripTrailingZeros().toPlainString());
