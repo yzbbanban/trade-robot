@@ -878,8 +878,8 @@ public class MainController implements MessageBox.IConfirm {
             hardTotal = hardTotal.add(new BigDecimal(pro.getHard()).multiply(pureCt));
         }
         BigDecimal productTotal = new BigDecimal(peoCount)
-                .multiply(
-                        new BigDecimal("3600").divide(ctTotal, BigDecimal.ROUND_HALF_UP, 4));
+                .multiply(new BigDecimal("3600").divide(ctTotal, BigDecimal.ROUND_HALF_UP, 4));
+        //宽泛产能 /1.1
         productTotal = productTotal.divide(new BigDecimal("1.1"), BigDecimal.ROUND_HALF_UP, 4);
         int totalCount = Integer.parseInt(peoCount);
         FaProductLingo faProductLingo = new FaProductLingo();
@@ -916,9 +916,8 @@ public class MainController implements MessageBox.IConfirm {
         faCalc.setXuph(xups.add(xups.multiply(new BigDecimal("0.1"))));
         faCalc.setXuphs(xups);
         faCalc.setProduction(productTotal);
-        faCalc.setIepoh(productTotal.divide(new BigDecimal(totalCount), BigDecimal.ROUND_HALF_UP, 4));
-        BigDecimal actG = productTotal.divide(new BigDecimal("1.1"), 4, BigDecimal.ROUND_HALF_UP);
-        faCalc.setIepohs(actG.divide(new BigDecimal(totalCount), BigDecimal.ROUND_HALF_UP, 4));
+        faCalc.setIepohs(productTotal.divide(new BigDecimal(totalCount), BigDecimal.ROUND_HALF_UP, 4));
+        faCalc.setIepoh(faCalc.getIepohs().multiply(new BigDecimal("1.1")));
         //利用率   iepohs/(3600/sum(CT))
         BigDecimal ct = new BigDecimal("3600").divide(new BigDecimal(faProductLingo.getStdct()),
                 BigDecimal.ROUND_HALF_UP, 4);
