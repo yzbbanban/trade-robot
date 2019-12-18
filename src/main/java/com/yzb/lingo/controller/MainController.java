@@ -880,7 +880,8 @@ public class MainController implements MessageBox.IConfirm {
         BigDecimal productTotal = new BigDecimal(peoCount)
                 .multiply(
                         new BigDecimal("3600").divide(ctTotal, BigDecimal.ROUND_HALF_UP, 4));
-        Integer totalCount = Integer.parseInt(peoCount);
+        productTotal = productTotal.divide(new BigDecimal("1.1"), BigDecimal.ROUND_HALF_UP, 4);
+        int totalCount = Integer.parseInt(peoCount);
         FaProductLingo faProductLingo = new FaProductLingo();
         faProductLingo.setEdition(banbie);
         //数据库处理
