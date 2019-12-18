@@ -188,11 +188,15 @@ public class MainController implements MessageBox.IConfirm {
 
         FaProductLingoCalc faCalc = new FaProductLingoCalc();
 
+        //记录宽放后的数据
         String production = parseLingo.getTotalGoods();
-        BigDecimal xups = new BigDecimal(production).divide(BigDecimal.TEN);
+        BigDecimal prod = new BigDecimal(production)
+                .divide(new BigDecimal("1.1"), BigDecimal.ROUND_HALF_UP, 4);
+        BigDecimal xups = prod.divide(BigDecimal.TEN);
         faCalc.setXuph(xups.add(xups.multiply(new BigDecimal("0.1"))));
         faCalc.setXuphs(xups);
-        faCalc.setProduction(new BigDecimal(parseLingo.getTotalGoods()));
+
+        faCalc.setProduction(prod);
         faCalc.setIepoh(new BigDecimal(parseLingo.getPoh().trim()));
         faCalc.setIepohs(new BigDecimal(parseLingo.getActualPoh().trim()));
         //利用率   iepohs/(3600/sum(CT))
