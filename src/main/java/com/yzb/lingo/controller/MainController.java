@@ -46,6 +46,8 @@ public class MainController implements MessageBox.IConfirm {
     @FXML
     private TextField toPoh;
     @FXML
+    private TextField tfSearch;
+    @FXML
     private TextField toActualPoh;
     @FXML
     private TextField toLoadRate;
@@ -118,7 +120,8 @@ public class MainController implements MessageBox.IConfirm {
     private MainProduct in;
     private String productName;
     private String banbie;
-
+    private List<MainProduct> mps = new ArrayList<>();
+    private List<MainProduct> mpsTemp = new ArrayList<>();
     private int[] wtype = new int[]{4, 5, 9, 10, 2, 11};
 
     /**
@@ -318,7 +321,7 @@ public class MainController implements MessageBox.IConfirm {
                     parseLingo.setAdminId(res[len - 1].replace("u", ""));
                 }
                 //找到总人数
-                if (json.contains("MP")) {
+                if (json.contains("MP") && !json.trim().contains("Model")) {
                     String[] mpParams = parseJson(json);
                     if (mpParams != null && mpParams.length > 1) {
                         //总人数
@@ -328,8 +331,8 @@ public class MainController implements MessageBox.IConfirm {
                     }
                 }
 
-                //搜索 FA*B*=1的数据
-                if (json.trim().contains("FA")) {
+                //搜索 FA*B*=1的数据 防止名称里含有特殊表达式
+                if (json.trim().contains("FA") && !json.trim().contains("Model")) {
                     String[] fabParams = parseJson(json);
                     if (fabParams != null && fabParams.length > 1) {
                         //不为0 有解
@@ -373,16 +376,16 @@ public class MainController implements MessageBox.IConfirm {
                         String value = mpParams[1];
                         //找到对应的工站匹配数据
                         //找到对应的人力配置 WA*B*
-                        if (variable.contains("WA")) {
+                        if (variable.contains("WA") && !json.trim().contains("Model")) {
                             setWPCValue(patterns, peo, variable, value, "WA");
                         }
 
                         //找到对应的Cycle PA*B* Cycle time
-                        if (variable.contains("PA")) {
+                        if (variable.contains("PA") && !json.trim().contains("Model")) {
                             setWPCValue(patterns, ct, variable, value, "PA");
                         }
                         //找到对应的产能 CA*B*
-                        if (variable.contains("CA")) {
+                        if (variable.contains("CA") && !json.trim().contains("Model")) {
                             setWPCValue(patterns, ca, variable, value, "CA");
                         }
                     } catch (Exception e) {
@@ -620,6 +623,47 @@ public class MainController implements MessageBox.IConfirm {
     }
 
     @FXML
+    public void btcSearch(ActionEvent actionEvent) {
+        cbLineNameList.getItems().clear();
+        String name = tfSearch.getText();
+        mpsTemp.forEach(mainProduct -> {
+            if (StringUtils.isEmpty(name)) {
+                cbLineNameList.getItems().addAll(mainProduct.getName() + "(" + mainProduct.getBanbie() + ")");
+            } else {
+                if (mainProduct.getName().contains(name)) {
+                    mps.add(mainProduct);
+                    cbLineNameList.getItems().addAll(mainProduct.getName() + "(" + mainProduct.getBanbie() + ")");
+                }
+            }
+        });
+        getCbLine();
+    }
+
+    private void getCbLine() {
+        cbLineNameList.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+
+                if (mps.size() <= 0) {
+                    MessageBox.error("系统提示", "请先初始化数据");
+                    return;
+                }
+
+                in = mps.get(newValue.intValue());
+                productName = in.getName();
+                banbie = in.getBanbie();
+                productId = newValue.intValue() + 1;
+                int id = in.getId();
+                nameId = id;
+                String edition = in.getBanbie();
+                lbBanbie.setText(in.getBanbie());
+                //加载数据
+                setProList(id, edition);
+            }
+        });
+    }
+
+    @FXML
     public void btcInitData(ActionEvent actionEvent) {
         userName.setText(GlobleParam.loginParam.getNickname());
         cbType.getItems().clear();
@@ -644,9 +688,10 @@ public class MainController implements MessageBox.IConfirm {
         ResultJson<MainProduct> mpList = gson.fromJson(result, new TypeToken<ResultJson<MainProduct>>() {
         }.getType());
 
-        List<MainProduct> mps = mpList.getData();
+        mpsTemp = mpList.getData();
         cbLineNameList.getItems().clear();
-        mps.forEach(mainProduct -> {
+        mpsTemp.forEach(mainProduct -> {
+            mps.add(mainProduct);
             cbLineNameList.getItems().addAll(mainProduct.getName() + "(" + mainProduct.getBanbie() + ")");
         });
 
@@ -666,27 +711,7 @@ public class MainController implements MessageBox.IConfirm {
             }
         });
         //加载工序
-        cbLineNameList.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-
-                if (mps.size() <= 0) {
-                    MessageBox.error("系统提示", "请先初始化数据");
-                    return;
-                }
-
-                in = mps.get(newValue.intValue());
-                productName = in.getName();
-                banbie = in.getBanbie();
-                productId = newValue.intValue() + 1;
-                int id = in.getId();
-                nameId = id;
-                String edition = in.getBanbie();
-                lbBanbie.setText(in.getBanbie());
-                //加载数据
-                setProList(id, edition);
-            }
-        });
+        getCbLine();
 
     }
 
