@@ -6,7 +6,7 @@
 
     <groupId>com.yzb</groupId>
     <artifactId>lin</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.8</version>
 
     <!-- 打包类型 -->、
     <packaging>jar</packaging>
