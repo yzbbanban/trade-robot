@@ -626,8 +626,10 @@ public class MainController implements MessageBox.IConfirm {
     public void btcSearch(ActionEvent actionEvent) {
         cbLineNameList.getItems().clear();
         String name = tfSearch.getText();
+        mps = new ArrayList<>();
         mpsTemp.forEach(mainProduct -> {
             if (StringUtils.isEmpty(name)) {
+                mps.add(mainProduct);
                 cbLineNameList.getItems().addAll(mainProduct.getName() + "(" + mainProduct.getBanbie() + ")");
             } else {
                 if (mainProduct.getName().contains(name)) {
@@ -636,6 +638,7 @@ public class MainController implements MessageBox.IConfirm {
                 }
             }
         });
+        System.out.println("==mps size==>" + mps.size());
         getCbLine();
     }
 
@@ -648,8 +651,11 @@ public class MainController implements MessageBox.IConfirm {
                     MessageBox.error("系统提示", "请先初始化数据");
                     return;
                 }
+                System.out.println("==mainPro=> " + newValue.intValue() + " ：" + mps.size());
 
                 in = mps.get(newValue.intValue());
+
+                System.out.println("==mainPro=> " + newValue.intValue() + " ：" + in);
                 productName = in.getName();
                 banbie = in.getBanbie();
                 productId = newValue.intValue() + 1;
@@ -689,6 +695,7 @@ public class MainController implements MessageBox.IConfirm {
         }.getType());
 
         mpsTemp = mpList.getData();
+        mps = new ArrayList<>();
         cbLineNameList.getItems().clear();
         mpsTemp.forEach(mainProduct -> {
             mps.add(mainProduct);
