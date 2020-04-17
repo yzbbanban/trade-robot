@@ -681,10 +681,10 @@ public class MainController implements MessageBox.IConfirm {
         // 11自定义: 1+2+3
         cbType.getItems().addAll(
                 "成品(车缝、包装、线外加工)",
-                "车缝成品(车缝、包装)",
-                "成品(不含线外加工)",
-                "车缝成品(不含线外加工)",
-                "包装",
+                "车缝成品(车缝、线外加工)",
+                "成品不含线外加工(车缝、包装)",
+                "车缝成品不含线外加工(车缝)",
+                "包装(包装)",
                 "自定义");
         cbType.getSelectionModel().selectFirst();
         //加载类型
